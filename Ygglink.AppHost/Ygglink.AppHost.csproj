@@ -13,7 +13,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Ygglink.ApiService\Ygglink.ApiService.csproj" />
-    <ProjectReference Include="..\Ygglink.Web\Ygglink.Web.csproj" />
   </ItemGroup>
 
   <ItemGroup>

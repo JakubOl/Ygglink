@@ -1,14 +1,12 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.12.35527.113 d17.12
+VisualStudioVersion = 17.12.35527.113
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ygglink.AppHost", "Ygglink.AppHost\Ygglink.AppHost.csproj", "{3F666CF8-4997-4D3B-A320-28F51A9C0984}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ygglink.ServiceDefaults", "Ygglink.ServiceDefaults\Ygglink.ServiceDefaults.csproj", "{4DA64CC5-411B-483E-B058-AFE27B38A5F1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ygglink.ApiService", "Ygglink.ApiService\Ygglink.ApiService.csproj", "{0421BF09-17C2-44A1-B4D3-3B2962830B87}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ygglink.Web", "Ygglink.Web\Ygglink.Web.csproj", "{BE5C2986-0F73-4471-BDDD-806FA09A3657}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ygglink.Tests", "Ygglink.Tests\Ygglink.Tests.csproj", "{4385FD0B-ECDC-4FD4-BBBC-98D3B655CC30}"
 EndProject
@@ -30,10 +28,6 @@ Global
 		{0421BF09-17C2-44A1-B4D3-3B2962830B87}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0421BF09-17C2-44A1-B4D3-3B2962830B87}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0421BF09-17C2-44A1-B4D3-3B2962830B87}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BE5C2986-0F73-4471-BDDD-806FA09A3657}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BE5C2986-0F73-4471-BDDD-806FA09A3657}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BE5C2986-0F73-4471-BDDD-806FA09A3657}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BE5C2986-0F73-4471-BDDD-806FA09A3657}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4385FD0B-ECDC-4FD4-BBBC-98D3B655CC30}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4385FD0B-ECDC-4FD4-BBBC-98D3B655CC30}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4385FD0B-ECDC-4FD4-BBBC-98D3B655CC30}.Release|Any CPU.ActiveCfg = Release|Any CPU
