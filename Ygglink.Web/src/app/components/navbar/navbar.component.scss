@@ -1,0 +1,101 @@
+:host ::ng-deep .sidenav-container {
+    height: 100vh;
+}
+
+:host ::ng-deep .sidenav {
+    background-color: #acbcc1;
+    color: #ffffff;
+    padding-top: 20px;
+    overflow: hidden;
+    max-width: 200px;
+}
+
+:host ::ng-deep .mat-toolbar {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.toggle-button {
+    color: black;
+}
+
+.logo-text {
+    font-size: 24px;
+    font-weight: 600;
+    margin: 0 0 0 10px;
+    color: #ffffff;
+}
+
+.mat-nav-list .mat-list-item {
+    color: #ffffff;
+}
+
+:host ::ng-deep .mat-mdc-list-item-unscoped-content {
+    display: flex;
+    justify-content: center;
+}
+
+.mat-nav-list .mat-list-item:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.mat-icon {
+    margin-right: 16px;
+}
+
+.mat-divider {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.collapsed .mat-list-item {
+    justify-content: center;
+}
+
+.collapsed .mat-icon {
+    margin-right: 0;
+}
+
+.collapsed span.mat-line {
+    display: none;
+}
+
+.content-area {
+    padding: 20px;
+    background-color: #f9f9f9;
+    transition: margin-left 0.3s;
+}
+
+:host ::ng-deep .sidenav-content {
+    margin-left: 250px;
+    transition: margin-left 0.3s;
+}
+
+:host ::ng-deep .sidenav-content.collapsed {
+    margin-left: 70px;
+}
+
+.nav-spacer {
+    height: calc(100vh - 240px);
+}
+
+@media (max-width: 600px) {
+
+    :host ::ng-deep .sidenav-container,
+    :host ::ng-deep .mat-sidenav-content,
+    .content-area {
+        width: 100%;
+        margin-left: 0 !important;
+    }
+
+    .toggle-button {
+        display: none;
+    }
+}

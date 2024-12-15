@@ -1,0 +1,48 @@
+<mat-sidenav-container class="sidenav-container">
+    <mat-sidenav #sidenav class="sidenav" [mode]="isScreenSmall ? 'over' : 'side'" [opened]="!isScreenSmall"
+        [fixedInViewport]="isScreenSmall" [fixedTopGap]="0" [style.width.px]="isNavbarCollapsed ? 70 : 250">
+        <div class="logo-container">
+            <h3 class="logo-text" *ngIf="!isNavbarCollapsed">Ygglink</h3>
+        </div>
+        <mat-divider></mat-divider>
+        <mat-nav-list class="nav-list">
+            <a mat-list-item routerLink="/profile" (click)="isScreenSmall ? sidenav.close() : null"
+                [class.collapsed]="isNavbarCollapsed">
+                <mat-icon matListIcon>person</mat-icon>
+                <span matLine *ngIf="!isNavbarCollapsed">Profile</span>
+            </a>
+
+            <div class="nav-spacer"></div>
+
+            <a mat-list-item (click)="toggleNavbar()" class="toggle-button"
+                [attr.aria-label]="isNavbarCollapsed ? 'Expand navbar' : 'Collapse navbar'"
+                [attr.aria-expanded]="!isNavbarCollapsed" *ngIf="!isScreenSmall" [class.collapsed]="isNavbarCollapsed">
+                <mat-icon matListIcon>
+                    {{ isNavbarCollapsed ? 'chevron_right' : 'chevron_left' }}
+                </mat-icon>
+                <span matLine *ngIf="!isNavbarCollapsed">
+                    {{ isNavbarCollapsed ? 'Expand' : 'Collapse' }}
+                </span>
+            </a>
+
+            <a mat-list-item (click)="logout(); isScreenSmall ? sidenav.close() : null"
+                [class.collapsed]="isNavbarCollapsed">
+                <mat-icon matListIcon>exit_to_app</mat-icon>
+                <span matLine *ngIf="!isNavbarCollapsed">Logout</span>
+            </a>
+        </mat-nav-list>
+    </mat-sidenav>
+
+    <mat-sidenav-content>
+        <mat-toolbar color="primary" *ngIf="isScreenSmall">
+            <button mat-icon-button (click)="sidenav.toggle()">
+                <mat-icon>menu</mat-icon>
+            </button>
+            <span class="toolbar-title">My App</span>
+        </mat-toolbar>
+
+        <div class="content-area" [class.collapsed]="isNavbarCollapsed">
+            <ng-content></ng-content>
+        </div>
+    </mat-sidenav-content>
+</mat-sidenav-container>

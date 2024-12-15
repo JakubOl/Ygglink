@@ -1,0 +1,25 @@
+<app-auth-layout>
+    <div class="verification-container">
+        <mat-card class="verification-card">
+            <mat-card-header>
+                <mat-card-title>Email Verification</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+                <div *ngIf="message && !error" class="message-container success">
+                    <p>{{ message }}</p>
+                </div>
+                <div *ngIf="error" class="message-container error">
+                    <p>{{ error }}</p>
+                </div>
+            </mat-card-content>
+            <mat-card-actions *ngIf="message || error" align="end">
+                <button mat-raised-button color="primary" *ngIf="message" (click)="navigateToLogin()">
+                    Go to Login
+                </button>
+                <button mat-raised-button color="accent" *ngIf="error" (click)="resendVerificationEmail()">
+                    Resend Email
+                </button>
+            </mat-card-actions>
+        </mat-card>
+    </div>
+</app-auth-layout>

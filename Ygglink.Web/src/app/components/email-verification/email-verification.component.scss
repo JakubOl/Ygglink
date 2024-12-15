@@ -1,0 +1,55 @@
+.verification-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f5f5f5;
+}
+
+.verification-card {
+    width: 400px;
+    max-width: 90%;
+    margin: 16px;
+}
+
+.mat-card-title {
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.message-container {
+    display: flex;
+    align-items: center;
+    margin: 20px 0;
+}
+
+.message-container mat-icon {
+    font-size: 48px;
+    margin-right: 16px;
+}
+
+.message-container.success mat-icon {
+    color: #4caf50;
+}
+
+.message-container.error mat-icon {
+    color: #f44336;
+}
+
+.message-container p {
+    font-size: 18px;
+    margin: 0;
+    line-height: 1.5;
+}
+
+.mat-card-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+@media (max-width: 600px) {
+    .verification-card {
+        width: 100%;
+    }
+}
