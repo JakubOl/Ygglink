@@ -61,10 +61,6 @@ builder.Services.AddOutputCache(options =>
 var app = builder.Build();
 
 app.MapDefaultEndpoints();
-
-if (app.Environment.IsDevelopment())
-    app.MapOpenApi();
-
 app.UseHttpsRedirection();
 app.UseRouting();
 app.UseAuthentication();

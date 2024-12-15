@@ -38,11 +38,6 @@ public static class OpenApiExtensions
         IApiVersioningBuilder apiVersioning = default)
     {
         var openApi = builder.Configuration.GetSection("OpenApi");
-        var identitySection = builder.Configuration.GetSection("Identity");
-
-        var scopes = identitySection.Exists()
-            ? identitySection.GetRequiredSection("Scopes").GetChildren().ToDictionary(p => p.Key, p => p.Value)
-            : [];
 
         if (!openApi.Exists())
             return builder;
@@ -57,7 +52,6 @@ public static class OpenApiExtensions
                 builder.Services.AddOpenApi(description, options =>
                 {
                     options.ApplyApiVersionInfo(openApi.GetRequiredValue("Document:Title"), openApi.GetRequiredValue("Document:Description"));
-                    options.ApplyAuthorizationChecks([.. scopes.Keys]);
                     options.ApplySecuritySchemeDefinitions();
                     options.ApplyOperationDeprecatedStatus();
                     options.ApplyApiVersionDescription();

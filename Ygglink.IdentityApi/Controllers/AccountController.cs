@@ -9,7 +9,9 @@ using Ygglink.IdentityApi.Models;
 
 namespace Ygglink.IdentityApi.Controllers;
 
-[Route("api/account")]
+[ApiVersion(1)]
+[ApiController]
+[Route("api/v{v:apiVersion}/account")]
 public class AccountController(
     ILogger<AccountController> logger,
     UserManager<AppUser> userManager,

@@ -5,7 +5,9 @@ var builder = DistributedApplication.CreateBuilder(args);
 
 builder.AddForwardedHeaders();
 
-var cache = builder.AddRedis("cache");
+var cache = builder
+    .AddRedis("cache")
+    .WithLifetime(ContainerLifetime.Persistent);
 
 var sqlServer = builder
     .AddSqlServer("sql")
@@ -26,7 +28,7 @@ var identityEndpoint = identityApi.GetEndpoint(launchProfileName);
 var apiGateway = builder.AddProject<Projects.Ygglink_Gateway>("ygglink-gateway")
     .WaitFor(identityApi)
     .WithReference(identityApi)
-    .WithEnvironment("Identity_Url", identityEndpoint);
+    .WithEnvironment("ReverseProxy__Clusters__identityapi-cluster__Destinations__destination1__Address", identityEndpoint);
 
 var gatewayEndpoint = apiGateway.GetEndpoint(launchProfileName);
 
