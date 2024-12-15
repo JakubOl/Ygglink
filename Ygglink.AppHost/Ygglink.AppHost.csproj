@@ -14,6 +14,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Ygglink.Gateway\Ygglink.Gateway.csproj" />
     <ProjectReference Include="..\Ygglink.IdentityApi\Ygglink.IdentityApi.csproj" />
+    <ProjectReference Include="..\Ygglink.Worker\Ygglink.Worker.csproj" />
   </ItemGroup>
 
   <ItemGroup>

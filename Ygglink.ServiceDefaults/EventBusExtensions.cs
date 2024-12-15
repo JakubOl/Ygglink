@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Ygglink.ServiceDefaults.Infrastructure;
+using Ygglink.ServiceDefaults.Models;
 
 namespace Ygglink.ServiceDefaults;
 

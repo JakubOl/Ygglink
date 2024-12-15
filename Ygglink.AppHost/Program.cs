@@ -11,14 +11,11 @@ var identityDb = sqlServer.AddDatabase("IdentityDatabase");
 
 var identityApi = builder.AddProject<Projects.Ygglink_IdentityApi>("ygglink-identityapi")
     .WaitFor(identityDb)
-    .WithReference(identityDb)
-    .WithExternalHttpEndpoints();
+    .WithReference(identityDb);
 
 var apiGateway = builder.AddProject<Projects.Ygglink_Gateway>("ygglink-gateway")
     .WaitFor(identityApi)
-    .WithReference(identityApi)
-    .WithHttpEndpoint(env: "PORT")
-    .WithExternalHttpEndpoints();
+    .WithReference(identityApi);
 
 builder.AddNpmApp("angular", "../Ygglink.Web")
     .WithReference(apiGateway)
@@ -27,5 +24,10 @@ builder.AddNpmApp("angular", "../Ygglink.Web")
     .WithExternalHttpEndpoints()
     .PublishAsDockerFile();
 
-builder.Build()
-    .Run();
+var workerDb = sqlServer.AddDatabase("WorkerDb");
+
+builder.AddProject<Projects.Ygglink_Worker>("ygglink-worker")
+    .WaitFor(workerDb)
+    .WithReference(workerDb);
+
+builder.Build().Run();
