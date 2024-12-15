@@ -29,7 +29,6 @@ var app = builder.Build();
 
 app.MapDefaultEndpoints();
 app.UseHttpsRedirection();
-app.UseAuthorization();
 
 app.UseHangfireDashboard("/hangfire", new DashboardOptions
 {
