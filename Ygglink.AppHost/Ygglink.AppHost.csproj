@@ -12,13 +12,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Ygglink.ApiService\Ygglink.ApiService.csproj" />
+    <ProjectReference Include="..\Ygglink.Gateway\Ygglink.Gateway.csproj" />
+    <ProjectReference Include="..\Ygglink.IdentityApi\Ygglink.IdentityApi.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Aspire.Hosting.AppHost" Version="9.0.0" />
     <PackageReference Include="Aspire.Hosting.NodeJs" Version="9.0.0" />
     <PackageReference Include="Aspire.Hosting.Redis" Version="9.0.0" />
+    <PackageReference Include="Aspire.Hosting.SqlServer" Version="9.0.0" />
   </ItemGroup>
 
 </Project>
