@@ -1,0 +1,29 @@
+.form-container {
+    max-width: 500px;
+    width: 100%;
+    padding: 20px;
+}
+
+.register-form {
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+mat-form-field {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+button {
+    width: 100%;
+    margin-top: 10px;
+}
+
+.error-message {
+    color: #f44336;
+    margin-bottom: 10px;
+    text-align: center;
+}

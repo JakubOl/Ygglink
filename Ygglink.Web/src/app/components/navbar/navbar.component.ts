@@ -1,10 +1,14 @@
 import { Component } from '@angular/core';
+import { AuthService } from '../../services/auth.service';
+import { Router } from '@angular/router';
+import { AuthLayoutComponent } from '../../shared/auth-layout/auth-layout.component';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 
 @Component({
   selector: 'app-navbar',
-  imports: [],
   templateUrl: './navbar.component.html',
-  styleUrl: './navbar.component.scss'
+  styleUrl: './navbar.component.scss',
+  standalone: false
 })
 export class NavbarComponent {
   isScreenSmall: boolean = false;

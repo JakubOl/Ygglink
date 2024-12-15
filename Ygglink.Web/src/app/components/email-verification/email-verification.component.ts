@@ -5,9 +5,9 @@ import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-email-verification',
-  imports: [],
   templateUrl: './email-verification.component.html',
-  styleUrl: './email-verification.component.scss'
+  styleUrl: './email-verification.component.scss',
+  standalone: false
 })
 export class EmailVerificationComponent implements OnInit {
   message: string = 'Verifying your email...';
