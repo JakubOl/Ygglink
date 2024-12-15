@@ -49,8 +49,6 @@ public static class OpenApiExtensions
 
         if (apiVersioning is not null)
         {
-            // the default format will just be ApiVersion.ToString(); for example, 1.0.
-            // this will format the version as "'v'major[.minor][-status]"
             var versioned = apiVersioning.AddApiExplorer(options => options.GroupNameFormat = "'v'VVV");
             string[] versions = ["v1"];
 
@@ -64,8 +62,7 @@ public static class OpenApiExtensions
                     options.ApplyOperationDeprecatedStatus();
                     options.ApplyApiVersionDescription();
                     options.ApplySchemaNullableFalse();
-                    // Clear out the default servers so we can fallback to
-                    // whatever ports have been allocated for the service by Aspire
+
                     options.AddDocumentTransformer((document, context, cancellationToken) =>
                     {
                         document.Servers = [];

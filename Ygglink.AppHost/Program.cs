@@ -38,7 +38,7 @@ builder.AddNpmApp("angular", "../Ygglink.Web")
     .WithExternalHttpEndpoints()
     .PublishAsDockerFile();
 
-var workerDb = sqlServer.AddDatabase("WorkerDb");
+var workerDb = sqlServer.AddDatabase("WorkerDatabase");
 
 builder.AddProject<Projects.Ygglink_Worker>("ygglink-worker")
     .WaitFor(workerDb)

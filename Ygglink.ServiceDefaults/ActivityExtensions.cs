@@ -2,7 +2,7 @@
 
 namespace Ygglink.ServiceDefaults;
 
-internal static class ActivityExtensions
+public static class ActivityExtensions
 {
     public static void SetExceptionTags(this Activity activity, Exception ex)
     {

@@ -11,7 +11,7 @@ builder.Services
     {
         x.UseSimpleAssemblyNameTypeSerializer()
          .UseRecommendedSerializerSettings()
-         .UseSqlServerStorage("Server=sqlserver,1433;Database=Hangfire;User=sa;Password=Your_password123;Encrypt=False;",
+         .UseSqlServerStorage("Server=sqlserver;Database=Hangfire;User=sa;Password=Your_password123;Encrypt=False;",
              new SqlServerStorageOptions
              {
                  CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
