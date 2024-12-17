@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Ygglink.IdentityApi.Infrastructure;
-using Ygglink.ServiceDefaults;
+using Ygglink.ServiceDefaults.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +17,8 @@ builder.Services
 builder.Services.AddControllers();
 
 builder.Services.AddSingleton<TokenGenerator, TokenGenerator>();
+
+builder.Services.AddEndpointsApiExplorer();
 
 var withApiVersioning = builder.Services.AddApiVersioning();
 

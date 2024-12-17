@@ -6,7 +6,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 
-namespace Ygglink.ServiceDefaults;
+namespace Ygglink.ServiceDefaults.Extensions;
 
 public static class AuthenticationExtensions
 {

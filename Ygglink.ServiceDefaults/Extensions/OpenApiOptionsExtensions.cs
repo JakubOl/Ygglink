@@ -9,7 +9,7 @@ using Microsoft.Extensions.Primitives;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 
-namespace Ygglink.ServiceDefaults;
+namespace Ygglink.ServiceDefaults.Extensions;
 
 internal static class OpenApiOptionsExtensions
 {
@@ -126,7 +126,7 @@ internal static class OpenApiOptionsExtensions
                 Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "oauth2" }
             };
 
-            operation.Security = [ new(){ [oAuthScheme] = scopes } ];
+            operation.Security = [new() { [oAuthScheme] = scopes }];
 
             return Task.CompletedTask;
         });
@@ -161,7 +161,7 @@ internal static class OpenApiOptionsExtensions
         return options;
     }
 
-    private static IOpenApiAny? CreateOpenApiAnyFromObject(object value)
+    private static IOpenApiAny CreateOpenApiAnyFromObject(object value)
     {
         return value switch
         {

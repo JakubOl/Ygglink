@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 
-namespace Ygglink.ServiceDefaults;
+namespace Ygglink.ServiceDefaults.Extensions;
 
 public static class ActivityExtensions
 {

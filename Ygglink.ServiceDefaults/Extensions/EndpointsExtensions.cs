@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Ygglink.ServiceDefaults.Models.Abstract;
 
-namespace Ygglink.ServiceDefaults;
+namespace Ygglink.ServiceDefaults.Extensions;
 
 public static class EndpointsExtensions
 {
@@ -14,7 +14,7 @@ public static class EndpointsExtensions
         ServiceDescriptor[] serviceDescriptors = Assembly
             .GetExecutingAssembly()
             .DefinedTypes
-            .Where(type => type is { IsAbstract: false, IsInterface: false } 
+            .Where(type => type is { IsAbstract: false, IsInterface: false }
                 && type.IsAssignableTo(typeof(IEndpoint)))
             .Select(type => ServiceDescriptor.Transient(typeof(IEndpoint), type))
             .ToArray();

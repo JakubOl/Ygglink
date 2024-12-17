@@ -1,6 +1,6 @@
 ﻿using System.Security.Claims;
 
-namespace Ygglink.ServiceDefaults;
+namespace Ygglink.ServiceDefaults.Extensions;
 
 public static class ClaimsPrincipalExtensions
 {

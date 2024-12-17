@@ -1,5 +1,6 @@
 using Hangfire;
 using Hangfire.SqlServer;
+using Ygglink.ServiceDefaults.Extensions;
 using Ygglink.Worker.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);

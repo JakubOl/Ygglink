@@ -13,10 +13,10 @@ using Microsoft.Extensions.Logging;
 using OpenTelemetry;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Trace;
-using Ygglink.ServiceDefaults;
 using Ygglink.ServiceDefaults.Infrastructure;
+using Microsoft.Extensions.Hosting;
 
-namespace Microsoft.Extensions.Hosting;
+namespace Ygglink.ServiceDefaults.Extensions;
 
 public static class Extensions
 {
@@ -124,8 +124,6 @@ public static class Extensions
             });
         }
 
-        app.UseDefaultOpenApi();
-
         ApiVersionSet apiVersionSet = app.NewApiVersionSet()
             .HasApiVersion(new ApiVersion(1))
             .ReportApiVersions()
@@ -136,6 +134,8 @@ public static class Extensions
             .WithApiVersionSet(apiVersionSet);
 
         app.MapEndpoints(versionedGroup);
+
+        app.UseDefaultOpenApi();
 
         return app;
     }

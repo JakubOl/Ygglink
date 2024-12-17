@@ -4,7 +4,7 @@ using Microsoft.Extensions.Options;
 using Ygglink.ServiceDefaults.Infrastructure;
 using Ygglink.ServiceDefaults.Models;
 
-namespace Ygglink.ServiceDefaults;
+namespace Ygglink.ServiceDefaults.Extensions;
 
 public static class EventBusExtensions
 {
