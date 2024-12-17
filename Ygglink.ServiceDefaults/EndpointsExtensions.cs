@@ -9,12 +9,13 @@ namespace Ygglink.ServiceDefaults;
 
 public static class EndpointsExtensions
 {
-    public static IServiceCollection AddEndpoints(this IServiceCollection services, Assembly assembly)
+    public static IServiceCollection AddEndpoints(this IServiceCollection services)
     {
-        ServiceDescriptor[] serviceDescriptors = assembly
+        ServiceDescriptor[] serviceDescriptors = Assembly
+            .GetExecutingAssembly()
             .DefinedTypes
-            .Where(type => type is { IsAbstract: false, IsInterface: false } &&
-                            type.IsAssignableTo(typeof(IEndpoint)))
+            .Where(type => type is { IsAbstract: false, IsInterface: false } 
+                && type.IsAssignableTo(typeof(IEndpoint)))
             .Select(type => ServiceDescriptor.Transient(typeof(IEndpoint), type))
             .ToArray();
 
@@ -25,16 +26,11 @@ public static class EndpointsExtensions
 
     public static IApplicationBuilder MapEndpoints(this WebApplication app, RouteGroupBuilder routeGroupBuilder = null)
     {
-        IEnumerable<IEndpoint> endpoints = app.Services
-            .GetRequiredService<IEnumerable<IEndpoint>>();
-
-        IEndpointRouteBuilder builder =
-            routeGroupBuilder is null ? app : routeGroupBuilder;
+        IEnumerable<IEndpoint> endpoints = app.Services.GetRequiredService<IEnumerable<IEndpoint>>();
+        //IEndpointRouteBuilder builder = routeGroupBuilder is null ? app : routeGroupBuilder;
 
         foreach (IEndpoint endpoint in endpoints)
-        {
-            endpoint.MapEndpoint(builder);
-        }
+            endpoint.MapEndpoint(app);
 
         return app;
     }

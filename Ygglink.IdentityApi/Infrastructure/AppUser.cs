@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Ygglink.ServiceDefaults.Models.Abstract;
 
-namespace Ygglink.IdentityApi.Models;
+namespace Ygglink.IdentityApi.Infrastructure;
 
 public class AppUser : IdentityUser, IEntity
 {

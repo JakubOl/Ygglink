@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Ygglink.IdentityApi.Models;
+namespace Ygglink.IdentityApi.Features.Register;
 
 public record RegisterDto
 {
