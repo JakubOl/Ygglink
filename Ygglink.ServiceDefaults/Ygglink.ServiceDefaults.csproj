@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Extensions\1wcishdv.5ig~" />
+  </ItemGroup>
+
+  <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
 	  
     <PackageReference Include="Asp.Versioning.Mvc" Version="8.1.0" />

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Ygglink.ServiceDefaults.Extensions;
 
 namespace Ygglink.IdentityApi.Infrastructure;
 
