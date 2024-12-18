@@ -12,10 +12,7 @@ public class VerifyEmailEndpoint : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
-        var accountGroup = app.MapGroup("api/v{v:apiVersion}/account");
-
-        accountGroup
-            .MapPost("verifyemail", 
+        app.MapPost("account/verifyemail", 
                 async (EmailVerificationDto model,
                     ILogger<LoginEndpoint> logger,
                     UserManager<AppUser> userManager,
@@ -36,8 +33,16 @@ public class VerifyEmailEndpoint : IEndpoint
                         return Results.BadRequest("Email verification failed");
 
                     return Results.Ok(new { message = "Email verification successful." });
-                })  
-            .WithName("Verify Email")
-            .WithOpenApi();
+                })
+            .Accepts<EmailVerificationDto>("application/json")
+            .Produces(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status400BadRequest)
+            .WithName("VerifyEmail")
+            .WithOpenApi(operation =>
+            {
+                operation.Summary = "User verify email endpoint";
+                operation.Description = "Verifies user email.";
+                return operation;
+            });
     }
 }

@@ -1,3 +1,4 @@
+using Asp.Versioning;
 using Microsoft.AspNetCore.Identity;
 using Ygglink.IdentityApi.Infrastructure;
 using Ygglink.ServiceDefaults.Extensions;
@@ -14,22 +15,32 @@ builder.Services
     .AddEntityFrameworkStores<IdentityDbContext>()
     .AddDefaultTokenProviders();
 
-builder.Services.AddControllers();
-
 builder.Services.AddSingleton<TokenGenerator, TokenGenerator>();
 
 builder.Services.AddEndpointsApiExplorer();
 
-var withApiVersioning = builder.Services.AddApiVersioning();
+builder.AddDefaultOpenApi();
+builder.Services.AddEndpoints();
 
+var withApiVersioning = builder.Services.AddApiVersioning();
 builder.AddDefaultOpenApi(withApiVersioning);
 
 var app = builder.Build();
 
-app.UseHttpsRedirection();
-app.UseRouting();
-app.UseAuthorization();
+var apiVersionSet = app.NewApiVersionSet()
+    .HasApiVersion(new ApiVersion(1))
+    .ReportApiVersions()
+    .Build();
+
+RouteGroupBuilder versionedGroup = app
+    .MapGroup("api/v{version:apiVersion}")
+    .WithApiVersionSet(apiVersionSet);
+
+app.MapEndpoints(versionedGroup);
 
 app.MapDefaultEndpoints();
+
+app.UseRouting();
+app.UseAuthorization();
 
 app.Run();

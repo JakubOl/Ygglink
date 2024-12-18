@@ -1,4 +1,3 @@
-using Aspire.Hosting;
 using Ygglink.AppHost;
 
 var builder = DistributedApplication.CreateBuilder(args);
@@ -7,7 +6,8 @@ builder.AddForwardedHeaders();
 
 var cache = builder
     .AddRedis("cache")
-    .WithLifetime(ContainerLifetime.Persistent);
+    .WithLifetime(ContainerLifetime.Persistent)
+    .WithRedisInsight();
 
 var sqlServer = builder
     .AddSqlServer("sql")
@@ -21,23 +21,21 @@ var launchProfileName = "https";
 
 var identityApi = builder.AddProject<Projects.Ygglink_IdentityApi>("ygglink-identityapi", launchProfileName)
     .WaitFor(identityDb)
-    .WithReference(identityDb);
+    .WithReference(identityDb)
+    .WithExternalHttpEndpoints();
 
 var identityEndpoint = identityApi.GetEndpoint(launchProfileName);
 
 var apiGateway = builder.AddProject<Projects.Ygglink_Gateway>("ygglink-gateway")
     .WaitFor(identityApi)
-    .WithReference(identityApi)
-    .WithEnvironment("ReverseProxy__Clusters__identityapi-cluster__Destinations__destination1__Address", identityEndpoint);
+    .WithReference(identityApi);
 
 var gatewayEndpoint = apiGateway.GetEndpoint(launchProfileName);
 
 builder.AddNpmApp("angular", "../Ygglink.Web")
-    .WithReference(apiGateway)
-    .WaitFor(apiGateway)
-    .WithHttpEndpoint(env: "PORT")
-    .WithEnvironment("Gateway_Url", gatewayEndpoint)
-    .WithExternalHttpEndpoints()
+    .WaitFor(identityApi)
+    .WithReference(identityApi)
+    .WithHttpEndpoint(env: "PORT", port: 4200)
     .PublishAsDockerFile();
 
 var workerDb = sqlServer.AddDatabase("WorkerDatabase");

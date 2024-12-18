@@ -50,8 +50,6 @@ public static class Extensions
 
         builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
-        builder.Services.AddEndpoints();
-
         return builder;
     }
 
@@ -123,17 +121,6 @@ public static class Extensions
                 ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse,
             });
         }
-
-        ApiVersionSet apiVersionSet = app.NewApiVersionSet()
-            .HasApiVersion(new ApiVersion(1))
-            .ReportApiVersions()
-            .Build();
-
-        RouteGroupBuilder versionedGroup = app
-            .MapGroup("api/v{version:apiVersion}")
-            .WithApiVersionSet(apiVersionSet);
-
-        app.MapEndpoints(versionedGroup);
 
         app.UseDefaultOpenApi();
 

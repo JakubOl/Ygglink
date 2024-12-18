@@ -1,12 +1,10 @@
-using Microsoft.AspNetCore.RateLimiting;
-using System.Threading.RateLimiting;
+using Ygglink.Gateway;
 using Ygglink.ServiceDefaults.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
-
-
+builder.AddServices();
 
 var app = builder.Build();
 
