@@ -12,9 +12,7 @@ public class RegisterEnpoint : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
-        var accountGroup = app.MapGroup("api/v{v:apiVersion}/account");
-        accountGroup
-            .MapPost("register", 
+        app.MapPost("account/register", 
                 async (RegisterDto model,
                 ILogger<RegisterEnpoint> logger,
                 UserManager<AppUser> userManager,
@@ -68,6 +66,25 @@ public class RegisterEnpoint : IEndpoint
             .Produces(StatusCodes.Status400BadRequest)
             .Produces(StatusCodes.Status401Unauthorized)
             .WithName("UserRegister")
+            .WithOpenApi(operation =>
+            {
+                operation.Summary = "User registration endpoint";
+                operation.Description = "Creates a new user account and sends an email verification link.";
+                return operation;
+            });
+
+        app.MapGet("account/Echo",
+                async (ILogger<RegisterEnpoint> logger,
+                UserManager<AppUser> userManager,
+                IFluentEmail fluentEmail,
+                IValidator<RegisterDto> validator) =>
+                {
+                    return Results.Ok(new { message = "Registration successful! Please check your email to verify your account." });
+                })
+            .Produces(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status400BadRequest)
+            .Produces(StatusCodes.Status401Unauthorized)
+            .WithName("Test")
             .WithOpenApi(operation =>
             {
                 operation.Summary = "User registration endpoint";

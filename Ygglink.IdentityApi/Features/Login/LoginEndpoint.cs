@@ -9,9 +9,7 @@ public class LoginEndpoint : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
-        var accountGroup = app.MapGroup("api/v{v:apiVersion}/account");
-        accountGroup
-            .MapPost("login", 
+        app.MapPost("account/login", 
                 async (LoginDto model,
                     ILogger<LoginEndpoint> logger,
                     UserManager<AppUser> userManager,

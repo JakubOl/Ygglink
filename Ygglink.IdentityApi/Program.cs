@@ -1,4 +1,4 @@
-using Asp.Versioning;
+using FluentValidation;
 using Microsoft.AspNetCore.Identity;
 using Ygglink.IdentityApi.Infrastructure;
 using Ygglink.ServiceDefaults.Extensions;
@@ -16,31 +16,18 @@ builder.Services
     .AddDefaultTokenProviders();
 
 builder.Services.AddSingleton<TokenGenerator, TokenGenerator>();
+builder.Services.AddEndpoints(typeof(Program));
 
 builder.Services.AddEndpointsApiExplorer();
-
-builder.AddDefaultOpenApi();
-builder.Services.AddEndpoints();
 
 var withApiVersioning = builder.Services.AddApiVersioning();
 builder.AddDefaultOpenApi(withApiVersioning);
 
+builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly);
+
 var app = builder.Build();
 
-var apiVersionSet = app.NewApiVersionSet()
-    .HasApiVersion(new ApiVersion(1))
-    .ReportApiVersions()
-    .Build();
-
-RouteGroupBuilder versionedGroup = app
-    .MapGroup("api/v{version:apiVersion}")
-    .WithApiVersionSet(apiVersionSet);
-
-app.MapEndpoints(versionedGroup);
-
 app.MapDefaultEndpoints();
-
-app.UseRouting();
-app.UseAuthorization();
+app.UseDefaultOpenApi();
 
 app.Run();

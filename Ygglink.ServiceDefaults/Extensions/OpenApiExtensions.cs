@@ -5,7 +5,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Scalar.AspNetCore;
-using Ygglink.ServiceDefaults.Extensions;
 
 namespace Ygglink.ServiceDefaults.Extensions;
 

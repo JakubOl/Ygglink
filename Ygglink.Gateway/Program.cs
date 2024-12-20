@@ -9,16 +9,14 @@ builder.AddServices();
 var app = builder.Build();
 
 app.MapDefaultEndpoints();
-app.UseHttpsRedirection();
-app.UseRouting();
 
-app.UseAuthentication();
-app.UseAuthorization();
+//app.UseAuthentication();
+//app.UseAuthorization();
 
-app.UseOutputCache();
+//app.UseOutputCache();
 
-app.UseCors("frontCorsPolicy");
-app.UseRateLimiter();
+//app.UseCors("frontCorsPolicy");
+//app.UseRateLimiter();
 
 app.MapReverseProxy();
 

@@ -48,7 +48,6 @@ public static class Extensions
             .AddFluentEmail(builder.Configuration["Email:SenderEmail"], builder.Configuration["Email:Sender"])
             .AddSmtpSender(builder.Configuration["Email:Host"], builder.Configuration.GetValue<int>("Email:Port"));
 
-        builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
         return builder;
     }
@@ -122,7 +121,16 @@ public static class Extensions
             });
         }
 
-        app.UseDefaultOpenApi();
+        var apiVersionSet = app.NewApiVersionSet()
+            .HasApiVersion(new ApiVersion(1))
+            .ReportApiVersions()
+            .Build();
+
+        RouteGroupBuilder versionedGroup = app
+            .MapGroup("api/v{version:apiVersion}")
+            .WithApiVersionSet(apiVersionSet);
+
+        app.MapEndpoints(versionedGroup);
 
         return app;
     }

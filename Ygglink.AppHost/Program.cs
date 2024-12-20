@@ -13,28 +13,22 @@ var sqlServer = builder
     .AddSqlServer("sql")
     .WithImage("mssql/server")
     .WithImageTag("latest")
+    .WithDataVolume()
     .WithLifetime(ContainerLifetime.Persistent);
 
 var identityDb = sqlServer.AddDatabase("IdentityDatabase");
 
-var launchProfileName = "https";
-
-var identityApi = builder.AddProject<Projects.Ygglink_IdentityApi>("ygglink-identityapi", launchProfileName)
+var identityApi = builder.AddProject<Projects.Ygglink_IdentityApi>("ygglink-identityapi", "https")
     .WaitFor(identityDb)
-    .WithReference(identityDb)
-    .WithExternalHttpEndpoints();
+    .WithReference(identityDb);
 
-var identityEndpoint = identityApi.GetEndpoint(launchProfileName);
-
-var apiGateway = builder.AddProject<Projects.Ygglink_Gateway>("ygglink-gateway")
+var apiGateway = builder.AddProject<Projects.Ygglink_Gateway>("ygglink-gateway", "https")
     .WaitFor(identityApi)
     .WithReference(identityApi);
 
-var gatewayEndpoint = apiGateway.GetEndpoint(launchProfileName);
-
 builder.AddNpmApp("angular", "../Ygglink.Web")
-    .WaitFor(identityApi)
-    .WithReference(identityApi)
+    .WaitFor(apiGateway)
+    .WithReference(apiGateway)
     .WithHttpEndpoint(env: "PORT", port: 4200)
     .PublishAsDockerFile();
 
