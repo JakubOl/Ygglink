@@ -40,11 +40,11 @@ public class LoginEndpoint : IEndpoint
                         return Results.Problem("Invalid username or password", statusCode: 401);
                     }
 
-                    if (!user.EmailConfirmed)
-                    {
-                        logger.LogInformation("User {@Username} login attempt failed", model.Email);
-                        return Results.Problem("Email is not confirmed", statusCode: 401);
-                    }
+                    //if (!user.EmailConfirmed)
+                    //{
+                    //    logger.LogInformation("User {@Username} login attempt failed", model.Email);
+                    //    return Results.Problem("Email is not confirmed", statusCode: 401);
+                    //}
 
                     logger.LogInformation("User {@Username} login attempt succeeded", model.Email);
 

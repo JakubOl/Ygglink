@@ -9,6 +9,11 @@ var cache = builder
     .WithLifetime(ContainerLifetime.Persistent)
     .WithRedisInsight();
 
+//var papercut = builder.AddContainer("papercut", "changemakerstudiosus/papercut-smtp", "latest")
+//    .WithHttpsEndpoint(port: 25, targetPort: 25)
+//    .WithHttpEndpoint(port: 8050, targetPort: 8050)
+//    .WithLifetime(ContainerLifetime.Persistent);
+
 var sqlServer = builder
     .AddSqlServer("sql")
     .WithImage("mssql/server")

@@ -44,7 +44,7 @@ export class LoginComponent {
           if (error.status === 0) {
             this.errorMessage = 'Service is unavailable. Please try again later.';
           } else if (error.status === 401) {
-            this.errorMessage = error.error || 'Login failed. Please try again.';
+            this.errorMessage = error.error?.detail || 'Login failed. Please try again.';
           } else {
             this.errorMessage = 'An unexpected error occurred.';
           }

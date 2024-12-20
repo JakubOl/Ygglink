@@ -11,7 +11,7 @@ import { AuthService } from '../../services/auth.service';
 })
 export class RegisterComponent {
   registerForm: FormGroup;
-  successMessage: string  = 'Registration successful! Please check your email to verify your account before logging in.';
+  successMessage: string = '';
   errorMessage: string = '';
   isLoading: boolean = false;
 
