@@ -1,10 +1,10 @@
 import { Subtask } from "./subtask";
 
 export interface TaskItem {
-    id: number;
+    guid: string;
     title: string;
     description: string;
-    date: string; // ISO string
+    date: string;
     isRecurring: boolean;
     subtasks?: Subtask[];
 }

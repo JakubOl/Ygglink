@@ -15,7 +15,7 @@ export class TaskService {
     return this.http.get<TaskItem[]>(environment.TASK_API, { params });
   }
 
-  getTask(id: number): Observable<TaskItem> {
+  getTask(id: string): Observable<TaskItem> {
     return this.http.get<TaskItem>(`${environment.TASK_API}/${id}`);
   }
 
@@ -24,10 +24,10 @@ export class TaskService {
   }
 
   updateTask(task: TaskItem): Observable<void> {
-    return this.http.put<void>(`${environment.TASK_API}/${task.id}`, task);
+    return this.http.put<void>(`${environment.TASK_API}/${task.guid}`, task);
   }
 
-  deleteTask(id: number): Observable<void> {
+  deleteTask(id: string): Observable<void> {
     return this.http.delete<void>(`${environment.TASK_API}/${id}`);
   }
 }

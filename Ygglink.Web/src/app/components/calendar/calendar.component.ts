@@ -4,6 +4,8 @@ import moment from 'moment';
 import { CalendarDay } from '../../models/calendarday';
 import { TaskService } from '../../services/task-service.service';
 import { TaskItem } from '../../models/task';
+import { TaskDialogComponent } from '../task-dialog/task-dialog.component';
+import { Subtask } from '../../models/subtask';
 
 @Component({
   selector: 'app-calendar',
@@ -58,7 +60,6 @@ export class CalendarComponent {
       },
       error: (err) => {
         console.error(err);
-        // Optionally, show error message
         this.isLoading = false;
       }
     });
@@ -89,7 +90,7 @@ export class CalendarComponent {
 
   deleteTask(task: TaskItem): void {
     if (confirm('Are you sure you want to delete this task?')) {
-      this.taskService.deleteTask(task.id).subscribe({
+      this.taskService.deleteTask(task.guid).subscribe({
         next: () => this.generateCalendar(),
         error: (err) => console.error(err)
       });

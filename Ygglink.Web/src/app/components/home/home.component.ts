@@ -1,9 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { BaseChartDirective } from 'ng2-charts';
-import { BarController, BarElement, CategoryScale, Chart, ChartConfiguration, ChartOptions, Legend, LinearScale, LineController, LineElement, PointElement, Title, Tooltip } from 'chart.js';
-import { HttpClient } from '@angular/common/http';
-import { catchError } from 'rxjs/operators';
-import { throwError, Observable } from 'rxjs';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-home',

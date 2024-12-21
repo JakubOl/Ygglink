@@ -10,7 +10,8 @@ import { TaskItem } from '../../models/task';
 @Component({
   selector: 'app-task-dialog',
   templateUrl: './task-dialog.component.html',
-  styleUrls: ['./task-dialog.component.scss']
+  styleUrls: ['./task-dialog.component.scss'],
+  standalone: false
 })
 export class TaskDialogComponent implements OnInit {
   taskForm: FormGroup;
@@ -86,7 +87,7 @@ export class TaskDialogComponent implements OnInit {
     if (this.taskForm.valid) {
       const formValue = this.taskForm.value;
       const task: TaskItem = {
-        id: this.isEditMode && this.data.task ? this.data.task.id : 0,
+        guid: this.isEditMode && this.data.task ? this.data.task.guid : "",
         title: formValue.title,
         description: formValue.description,
         date: moment(this.date).format('YYYY-MM-DD'),
