@@ -3,9 +3,14 @@
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>a29f4f8b-b844-4616-a9c4-cc275cd0970c</UserSecretsId>
+    <UserSecretsId>b6797d2d-0355-44fd-bd2e-64ca13363ef8</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Ygglink.ServiceDefaults\Ygglink.ServiceDefaults.csproj" />

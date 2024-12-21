@@ -1,0 +1,31 @@
+.stock-grid {
+    display: grid;
+    grid-gap: 1rem;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    align-items: start;
+}
+
+.stock-item {
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    padding: 1rem;
+    border-radius: 4px;
+}
+
+.chart-placeholder {
+    height: 200px;
+    background: #fafafa;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #666;
+}
+
+canvas {
+    max-width: 800px;
+    margin: auto;
+  }
+  
+  button {
+    margin-right: 10px;
+  }

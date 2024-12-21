@@ -43,4 +43,10 @@ builder.AddProject<Projects.Ygglink_Worker>("ygglink-worker")
     .WaitFor(workerDb)
     .WithReference(workerDb);
 
+var taskDb = sqlServer.AddDatabase("TaskDatabase");
+
+builder.AddProject<Projects.Ygglink_TaskApi>("ygglink-taskapi")
+    .WaitFor(taskDb)
+    .WithReference(taskDb);
+
 builder.Build().Run();

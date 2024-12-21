@@ -1,0 +1,66 @@
+<!-- src/app/components/task-dialog/task-dialog.component.html -->
+<h1 mat-dialog-title>{{ isEditMode ? 'Edit Task' : 'Add Task' }}</h1>
+<div mat-dialog-content>
+    <form [formGroup]="taskForm">
+        <!-- Title Field -->
+        <mat-form-field appearance="fill" class="full-width">
+            <mat-label>Title</mat-label>
+            <input matInput formControlName="title" maxlength="100" />
+            <mat-hint align="end">{{ taskForm.get('title')?.value?.length || 0 }}/100</mat-hint>
+            <mat-error *ngIf="taskForm.get('title')?.hasError('required')">
+                Title is required
+            </mat-error>
+            <mat-error *ngIf="taskForm.get('title')?.hasError('maxlength')">
+                Title cannot exceed 100 characters
+            </mat-error>
+        </mat-form-field>
+
+        <!-- Description Field -->
+        <mat-form-field appearance="fill" class="full-width">
+            <mat-label>Description</mat-label>
+            <textarea matInput formControlName="description" maxlength="500"></textarea>
+            <mat-hint align="end">{{ taskForm.get('description')?.value?.length || 0 }}/500</mat-hint>
+            <mat-error *ngIf="taskForm.get('description')?.hasError('required')">
+                Description is required
+            </mat-error>
+            <mat-error *ngIf="taskForm.get('description')?.hasError('maxlength')">
+                Description cannot exceed 500 characters
+            </mat-error>
+        </mat-form-field>
+
+        <!-- Recurring Checkbox -->
+        <mat-checkbox formControlName="isRecurring">Recurring Daily</mat-checkbox>
+
+        <!-- Subtasks Section -->
+        <div formArrayName="subtasks" class="subtasks-section">
+            <h3>Subtasks</h3>
+            <button mat-mini-fab color="primary" (click)="addSubtask()" type="button" aria-label="Add Subtask">
+                <mat-icon>add</mat-icon>
+            </button>
+            <div *ngFor="let subtask of subtasks.controls; let i = index" [formGroupName]="i" class="subtask-item">
+                <mat-form-field appearance="fill" class="subtask-input">
+                    <mat-label>Subtask Title</mat-label>
+                    <input matInput formControlName="title" maxlength="100" />
+                    <mat-hint align="end">{{ subtask.get('title')?.value?.length || 0 }}/100</mat-hint>
+                    <mat-error *ngIf="subtask.get('title')?.hasError('required')">
+                        Subtask title is required
+                    </mat-error>
+                    <mat-error *ngIf="subtask.get('title')?.hasError('maxlength')">
+                        Subtask title cannot exceed 100 characters
+                    </mat-error>
+                </mat-form-field>
+                <mat-checkbox formControlName="isCompleted">Completed</mat-checkbox>
+                <button mat-icon-button color="warn" (click)="removeSubtask(i)" type="button"
+                    aria-label="Remove Subtask">
+                    <mat-icon>delete</mat-icon>
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+<div mat-dialog-actions align="end">
+    <button mat-button (click)="onNoClick()">Cancel</button>
+    <button mat-button color="primary" [disabled]="!taskForm.valid" (click)="saveTask()">
+        {{ isEditMode ? 'Update' : 'Save' }}
+    </button>
+</div>

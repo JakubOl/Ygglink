@@ -1,7 +1,5 @@
 ﻿using FluentEmail.Core;
-using System.Text;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.WebUtilities;
 using Ygglink.IdentityApi.Infrastructure;
 using Ygglink.ServiceDefaults.Models.Abstract;
 using FluentValidation;

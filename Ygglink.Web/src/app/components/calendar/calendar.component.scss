@@ -1,0 +1,105 @@
+.toolbar-title {
+    flex: 1;
+    text-align: center;
+    font-size: 1.2em;
+    font-weight: 500;
+}
+
+.weekday-header {
+    background-color: rgba(63, 81, 181, 0.1);
+    /* Indigo 500 with opacity */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    border-radius: 4px;
+}
+
+.weekday-name {
+    font-size: 0.9em;
+    text-transform: uppercase;
+}
+
+.day-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 4px;
+    cursor: pointer;
+}
+
+.date-number {
+    font-weight: bold;
+    margin-bottom: 4px;
+    color: #3f51b5;
+    /* Indigo 500 */
+}
+
+.tasks {
+    flex: 1;
+    overflow-y: auto;
+}
+
+.task-card {
+    margin-bottom: 4px;
+    background-color: #e8eaf6;
+    /* Light indigo */
+}
+
+.task-card mat-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.task-card mat-card-title {
+    font-size: 1em;
+    font-weight: 600;
+}
+
+.subtasks {
+    margin-top: 8px;
+}
+
+.current-month {
+    background-color: #ffffff;
+}
+
+.other-month {
+    background-color: #f0f0f0;
+}
+
+.mat-grid-tile {
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+}
+
+.mat-grid-tile:hover {
+    background-color: rgba(63, 81, 181, 0.05);
+}
+
+.calendar-container {
+    position: relative;
+    padding: 16px;
+}
+
+mat-progress-spinner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+@media (max-width: 768px) {
+    .mat-grid-tile {
+        padding: 2px;
+    }
+
+    .weekday-name {
+        font-size: 0.8em;
+    }
+
+    .task-card mat-card-title {
+        font-size: 0.9em;
+    }
+}

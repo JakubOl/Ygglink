@@ -12,7 +12,7 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 })
 export class NavbarComponent {
   isScreenSmall: boolean = false;
-  isNavbarCollapsed: boolean = false; // Tracks the navbar's collapsed state
+  isNavbarCollapsed: boolean = false;
 
   constructor(
     public authService: AuthService,

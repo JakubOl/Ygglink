@@ -1,21 +1,13 @@
 using FluentValidation;
-using Microsoft.AspNetCore.Identity;
-using Ygglink.IdentityApi.Infrastructure;
 using Ygglink.ServiceDefaults.Extensions;
+using Ygglink.TaskApi.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
 
-builder.AddSqlServerDbContext<IdentityDbContext>(connectionName: "IdentityDatabase");
-builder.Services.AddMigration<IdentityDbContext, UsersSeed>();
-
-builder.Services
-    .AddIdentity<AppUser, IdentityRole>()
-    .AddEntityFrameworkStores<IdentityDbContext>()
-    .AddDefaultTokenProviders();
-
-builder.Services.AddSingleton<TokenGenerator, TokenGenerator>();
+builder.AddSqlServerDbContext<TaskDbContext>(connectionName: "TaskDatabase");
+builder.Services.AddMigration<TaskDbContext>((_, _) => Task.CompletedTask);
 
 builder.Services.AddEndpoints(typeof(Program));
 builder.Services.AddEndpointsApiExplorer();
@@ -30,4 +22,7 @@ var app = builder.Build();
 app.MapDefaultEndpoints();
 app.UseDefaultOpenApi();
 
+app.UseHttpsRedirection();
+
 app.Run();
+

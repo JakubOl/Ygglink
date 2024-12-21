@@ -1,0 +1,54 @@
+<mat-toolbar color="primary">
+    <button mat-icon-button (click)="prevMonth()" aria-label="Previous Month">
+      <mat-icon>chevron_left</mat-icon>
+    </button>
+    <span class="toolbar-title">{{ currentDate.format('MMMM YYYY') }}</span>
+    <button mat-icon-button (click)="nextMonth()" aria-label="Next Month">
+      <mat-icon>chevron_right</mat-icon>
+    </button>
+  </mat-toolbar>
+  
+  <div class="calendar-container">
+    <mat-progress-spinner *ngIf="isLoading" mode="indeterminate"></mat-progress-spinner>
+    <mat-grid-list *ngIf="!isLoading" cols="7" gutterSize="4px" rowHeight="1:1">
+      <!-- Weekday Headers -->
+      <mat-grid-tile *ngFor="let day of ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']" class="weekday-header">
+        <div class="weekday-name">{{ day }}</div>
+      </mat-grid-tile>
+  
+      <!-- Calendar Days -->
+      <ng-container *ngFor="let week of weeks">
+        <ng-container *ngFor="let day of week">
+          <mat-grid-tile [ngClass]="{'current-month': day.isCurrentMonth, 'other-month': !day.isCurrentMonth}">
+            <div class="day-container">
+              <div class="date-number" (click)="openAddTaskDialog(day.date)" tabindex="0">
+                {{ day.dayNumber }}
+              </div>
+              <div class="tasks">
+                <mat-card *ngFor="let task of day.tasks" class="task-card">
+                  <mat-card-header>
+                    <mat-card-title>{{ task.title }}</mat-card-title>
+                    <button mat-icon-button (click)="deleteTask(task)" aria-label="Delete Task">
+                      <mat-icon>close</mat-icon>
+                    </button>
+                  </mat-card-header>
+                  <mat-card-content>
+                    <p>{{ task.description }}</p>
+                    <div *ngIf="task.subtasks && task.subtasks.length > 0" class="subtasks">
+                      <mat-list dense>
+                        <mat-list-item *ngFor="let subtask of task.subtasks">
+                          <mat-checkbox [(ngModel)]="subtask.isCompleted" (change)="toggleSubtaskCompletion(task, subtask)">
+                            {{ subtask.title }}
+                          </mat-checkbox>
+                        </mat-list-item>
+                      </mat-list>
+                    </div>
+                  </mat-card-content>
+                </mat-card>
+              </div>
+            </div>
+          </mat-grid-tile>
+        </ng-container>
+      </ng-container>
+    </mat-grid-list>
+  </div>
