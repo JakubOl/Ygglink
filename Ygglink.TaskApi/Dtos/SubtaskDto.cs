@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Ygglink.TaskApi.Models;
 
-namespace Ygglink.TaskApi.Enpoints.Dtos;
+namespace Ygglink.TaskApi.Dtos;
 
 public class SubtaskDto
 {

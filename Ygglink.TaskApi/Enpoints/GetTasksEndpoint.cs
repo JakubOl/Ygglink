@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Ygglink.ServiceDefaults.Extensions;
 using Ygglink.ServiceDefaults.Models.Abstract;
-using Ygglink.TaskApi.Enpoints.Dtos;
+using Ygglink.TaskApi.Dtos;
 using Ygglink.TaskApi.Infrastructure;
 
 namespace Ygglink.TaskApi.Enpoints;
