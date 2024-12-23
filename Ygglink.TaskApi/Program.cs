@@ -17,26 +17,14 @@ builder.AddDefaultOpenApi(withApiVersioning);
 
 builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly);
 
-//builder.Services.AddCors(options =>
-//{
-//    options.AddPolicy("Gateway",
-//        builder => builder
-//            .WithOrigins("http://gateway:4200")
-//            .AllowAnyMethod()
-//            .AllowAnyHeader()
-//            .AllowCredentials()
-//            );
-//});
-
 var app = builder.Build();
 app.UseRouting();
 
-//app.UseAuthentication();
-//app.UseAuthorization();
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapDefaultEndpoints();
 app.UseDefaultOpenApi();
 
-//app.UseCors("Gateway");
 app.Run();
 

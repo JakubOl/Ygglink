@@ -17,8 +17,7 @@ public class GetTasksEndpoint : IEndpoint
             async ([FromQuery] string month,
             ILogger<GetTasksEndpoint> logger,
             TaskDbContext context,
-            ClaimsPrincipal user,
-            HttpRequest request) =>
+            ClaimsPrincipal user) =>
                 {
                     var userId = user.GetUserGuid();
                     if (userId == Guid.Empty)
@@ -65,6 +64,7 @@ public class GetTasksEndpoint : IEndpoint
                 operation.Summary = "Tasks Endpoint";
                 operation.Description = "Returns tasks with subtasks in current month.";
                 return operation;
-            });
+            })
+            .RequireAuthorization();
     }
 }

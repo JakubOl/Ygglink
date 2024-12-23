@@ -90,16 +90,13 @@ export class CalendarComponent {
   }
 
   deleteTask(task: TaskItem): void {
-    if (confirm('Are you sure you want to delete this task?')) {
-      this.taskService.deleteTask(task.guid).subscribe({
-        next: () => this.generateCalendar(),
-        error: (err) => this.snackBar.open('Failed to delete task. Please try again.', 'Close', { duration: 3000 })
-      });
-    }
+    this.taskService.deleteTask(task.guid).subscribe({
+      next: () => this.generateCalendar(),
+      error: (err) => this.snackBar.open('Failed to delete task. Please try again.', 'Close', { duration: 3000 })
+    });
   }
 
   toggleSubtaskCompletion(task: TaskItem, subtask: Subtask): void {
-    // Toggle isCompleted and update the task
     if (task.subtasks) {
       const updatedSubtasks = task.subtasks.map(st => {
         if (st.id === subtask.id) {

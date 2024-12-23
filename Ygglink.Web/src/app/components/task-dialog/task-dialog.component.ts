@@ -6,6 +6,7 @@ import moment from 'moment';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TaskService } from '../../services/task-service.service';
 import { TaskItem } from '../../models/task';
+import { Guid } from 'guid-typescript';
 
 @Component({
   selector: 'app-task-dialog',
@@ -87,13 +88,12 @@ export class TaskDialogComponent implements OnInit {
     if (this.taskForm.valid) {
       const formValue = this.taskForm.value;
       const task: TaskItem = {
-        guid: this.isEditMode && this.data.task ? this.data.task.guid : "",
+        guid: this.isEditMode && this.data.task ? this.data.task.guid : Guid.create().toString(),
         title: formValue.title,
         description: formValue.description,
         date: moment(this.date).format('YYYY-MM-DD'),
         isRecurring: formValue.isRecurring,
         subtasks: formValue.subtasks.map((st: any) => ({
-          id: st.id,
           title: st.title,
           isCompleted: st.isCompleted
         }))
