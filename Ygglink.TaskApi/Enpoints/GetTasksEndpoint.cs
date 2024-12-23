@@ -21,7 +21,7 @@ public class GetTasksEndpoint : IEndpoint
                 {
                     var userId = user.GetUserGuid();
                     if (userId == Guid.Empty)
-                        return Results.Problem(statusCode: 401);
+                        return Results.Problem("User not authorized", statusCode: 401);
 
                     if (!DateTime.TryParse(month + "-01", out DateTime parsedMonth))
                         return Results.BadRequest(new { message = "Invalid month format. Use YYYY-MM." });
@@ -64,7 +64,6 @@ public class GetTasksEndpoint : IEndpoint
                 operation.Summary = "Tasks Endpoint";
                 operation.Description = "Returns tasks with subtasks in current month.";
                 return operation;
-            })
-            .RequireAuthorization();
+            });
     }
 }

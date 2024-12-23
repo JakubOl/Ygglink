@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
-using Ygglink.TaskApi.Enpoints.Dtos;
+using Ygglink.TaskApi.Dtos;
 
 namespace Ygglink.TaskApi.Models;
 

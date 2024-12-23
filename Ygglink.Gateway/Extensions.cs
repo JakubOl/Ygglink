@@ -12,8 +12,8 @@ public static class Extensions
             .LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"))
             .AddServiceDiscoveryDestinationResolver();
 
-        //builder.Services
-        //    .AddAuthorization(options => options.AddPolicy("RequireUserRole", policy => policy.RequireRole("user")));
+        builder.Services
+            .AddAuthorization(options => options.AddPolicy("RequireUserRole", policy => policy.RequireRole("user")));
 
         //builder.Services.AddRateLimiter(options =>
         //{

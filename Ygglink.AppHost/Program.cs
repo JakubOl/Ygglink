@@ -22,14 +22,21 @@ var sqlServer = builder
     .WithLifetime(ContainerLifetime.Persistent);
 
 var identityDb = sqlServer.AddDatabase("IdentityDatabase");
+var taskDb = sqlServer.AddDatabase("TaskDatabase");
 
 var identityApi = builder.AddProject<Projects.Ygglink_IdentityApi>("ygglink-identityapi", "https")
     .WaitFor(identityDb)
     .WithReference(identityDb);
 
+var taskApi = builder.AddProject<Projects.Ygglink_TaskApi>("ygglink-taskapi")
+    .WaitFor(taskDb)
+    .WithReference(taskDb);
+
 var apiGateway = builder.AddProject<Projects.Ygglink_Gateway>("ygglink-gateway", "https")
     .WaitFor(identityApi)
-    .WithReference(identityApi);
+    .WaitFor(taskApi)
+    .WithReference(identityApi)
+    .WithReference(taskApi);
 
 builder.AddNpmApp("angular", "../Ygglink.Web")
     .WaitFor(apiGateway)
@@ -42,11 +49,5 @@ var workerDb = sqlServer.AddDatabase("WorkerDatabase");
 builder.AddProject<Projects.Ygglink_Worker>("ygglink-worker")
     .WaitFor(workerDb)
     .WithReference(workerDb);
-
-var taskDb = sqlServer.AddDatabase("TaskDatabase");
-
-builder.AddProject<Projects.Ygglink_TaskApi>("ygglink-taskapi")
-    .WaitFor(taskDb)
-    .WithReference(taskDb);
 
 builder.Build().Run();

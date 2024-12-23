@@ -106,7 +106,6 @@ export class TaskDialogComponent implements OnInit {
             this.dialogRef.close('refresh');
           },
           error: (err) => {
-            console.error(err);
             this.snackBar.open('Failed to update task. Please try again.', 'Close', { duration: 3000 });
           }
         });

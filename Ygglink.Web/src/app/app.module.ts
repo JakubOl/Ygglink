@@ -35,6 +35,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { CalendarComponent } from './components/calendar/calendar.component';
 import { HomeComponent } from './components/home/home.component';
 import { TaskDialogComponent } from './components/task-dialog/task-dialog.component';
+import { httpInterceptorProviders } from './interceptors/http.interceptor';
 
 @NgModule({
   declarations: [
@@ -76,6 +77,7 @@ import { TaskDialogComponent } from './components/task-dialog/task-dialog.compon
     MatCheckboxModule,
     MatSnackBarModule,
   ],
+  providers: [httpInterceptorProviders],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

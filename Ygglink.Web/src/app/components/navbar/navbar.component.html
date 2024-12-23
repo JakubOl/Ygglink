@@ -11,6 +11,11 @@
                 <mat-icon matListIcon>person</mat-icon>
                 <span matLine *ngIf="!isNavbarCollapsed">Profile</span>
             </a>
+            <a mat-list-item routerLink="/calendar" (click)="isScreenSmall ? sidenav.close() : null"
+                [class.collapsed]="isNavbarCollapsed">
+                <mat-icon matListIcon>calendar_today</mat-icon>
+                <span matLine *ngIf="!isNavbarCollapsed">Calendar</span>
+            </a>
 
             <div class="nav-spacer"></div>
 

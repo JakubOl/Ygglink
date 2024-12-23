@@ -6,6 +6,7 @@ import { TaskService } from '../../services/task-service.service';
 import { TaskItem } from '../../models/task';
 import { TaskDialogComponent } from '../task-dialog/task-dialog.component';
 import { Subtask } from '../../models/subtask';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-calendar',
@@ -18,7 +19,7 @@ export class CalendarComponent {
   weeks: CalendarDay[][] = [];
   isLoading: boolean = false;
 
-  constructor(private taskService: TaskService, public dialog: MatDialog) { }
+  constructor(private taskService: TaskService, public dialog: MatDialog, private snackBar: MatSnackBar) { }
 
   ngOnInit(): void {
     this.generateCalendar();
@@ -59,8 +60,8 @@ export class CalendarComponent {
         this.isLoading = false;
       },
       error: (err) => {
-        console.error(err);
         this.isLoading = false;
+        this.snackBar.open(`Failed to fetch tasks. Please try again.`, 'Close', { duration: 3000 });
       }
     });
   }
@@ -92,7 +93,7 @@ export class CalendarComponent {
     if (confirm('Are you sure you want to delete this task?')) {
       this.taskService.deleteTask(task.guid).subscribe({
         next: () => this.generateCalendar(),
-        error: (err) => console.error(err)
+        error: (err) => this.snackBar.open('Failed to delete task. Please try again.', 'Close', { duration: 3000 })
       });
     }
   }
@@ -109,7 +110,7 @@ export class CalendarComponent {
       const updatedTask: TaskItem = { ...task, subtasks: updatedSubtasks };
       this.taskService.updateTask(updatedTask).subscribe({
         next: () => this.generateCalendar(),
-        error: (err) => console.error(err)
+        error: (err) => this.snackBar.open('Failed to toggle task completion. Please try again.', 'Close', { duration: 3000 })
       });
     }
   }
