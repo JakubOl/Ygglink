@@ -6,5 +6,6 @@ module.exports = {
         process.env["services__ygglink-gateway__https__0"],
       changeOrigin: true,
       secure: false, //process.env["NODE_ENV"] !== "development",
+      logLevel: "debug",
     },
   };

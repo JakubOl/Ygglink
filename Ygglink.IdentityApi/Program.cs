@@ -1,3 +1,4 @@
+using Asp.Versioning;
 using FluentValidation;
 using Microsoft.AspNetCore.Identity;
 using Ygglink.IdentityApi.Infrastructure;
@@ -18,6 +19,7 @@ builder.Services
 builder.Services.AddSingleton<TokenGenerator, TokenGenerator>();
 
 builder.Services.AddEndpoints(typeof(Program));
+
 builder.Services.AddEndpointsApiExplorer();
 
 var withApiVersioning = builder.Services.AddApiVersioning();

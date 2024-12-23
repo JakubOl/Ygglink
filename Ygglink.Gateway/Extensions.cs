@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.RateLimiting;
-using System.Threading.RateLimiting;
-
-namespace Ygglink.Gateway;
+﻿namespace Ygglink.Gateway;
 
 public static class Extensions
 {
@@ -39,16 +36,16 @@ public static class Extensions
         //            }));
         //});
 
-        //builder.Services.AddCors(options =>
-        //{
-        //    options.AddPolicy("frontCorsPolicy", builder =>
-        //    {
-        //        builder.WithOrigins("http://localhost:4200")
-        //            .AllowAnyMethod()
-        //            .AllowAnyHeader()
-        //            .AllowCredentials();
-        //    });
-        //});
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("frontCorsPolicy", builder =>
+            {
+                builder.WithOrigins("http://localhost:4200")
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .AllowCredentials();
+            });
+        });
 
         //builder.Services.AddOutputCache(options =>
         //{

@@ -17,7 +17,8 @@ public class GetTasksEndpoint : IEndpoint
             async ([FromQuery] string month,
             ILogger<GetTasksEndpoint> logger,
             TaskDbContext context,
-            ClaimsPrincipal user) =>
+            ClaimsPrincipal user,
+            HttpRequest request) =>
                 {
                     var userId = user.GetUserGuid();
                     if (userId == Guid.Empty)

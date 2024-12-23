@@ -1,3 +1,4 @@
+using Asp.Versioning;
 using Ygglink.Gateway;
 using Ygglink.ServiceDefaults.Extensions;
 
@@ -19,7 +20,7 @@ app.UseAuthorization();
 
 //app.UseOutputCache();
 
-//app.UseCors("frontCorsPolicy");
+app.UseCors("frontCorsPolicy");
 //app.UseRateLimiter();
 
 app.MapReverseProxy();
