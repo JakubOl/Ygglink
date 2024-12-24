@@ -43,8 +43,8 @@ export class CalendarComponent {
         while (current.isBefore(endDate, 'day')) {
           const week: CalendarDay[] = [];
           for (let i = 0; i < 7; i++) {
-            const date = current.clone();
-            const dayTasks = tasks.filter(task => moment(date).isBetween(moment(task.startDate), moment(task.endDate).add(23, "h")));
+            const date = current.clone().add(1, "minute");
+            const dayTasks = tasks.filter(task => moment(date).isBetween(moment(task.startDate), moment(task.endDate)));
             week.push({
               date: date.toDate(),
               tasks: dayTasks,

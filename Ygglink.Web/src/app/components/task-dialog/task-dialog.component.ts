@@ -91,8 +91,8 @@ export class TaskDialogComponent implements OnInit {
       guid: this.isEditMode && this.data.task ? this.data.task.guid : Guid.create().toString(),
       title: formValue.title,
       description: formValue.description,
-      startDate: moment(formValue.startDate).format('YYYY-MM-DD'),
-      endDate: moment(formValue.endDate).format('YYYY-MM-DD'),
+      startDate: moment(formValue.startDate).format(),
+      endDate: moment(formValue.endDate).add(23, "hours").add(59, "minutes").add(59, "seconds").format(),
       subtasks: formValue.subtasks.map((st: any) => ({
         title: st.title,
         isCompleted: st.isCompleted
