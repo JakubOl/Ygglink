@@ -1,5 +1,4 @@
 using System.Reflection;
-using Asp.Versioning.Builder;
 using Asp.Versioning;
 using FluentValidation;
 using HealthChecks.UI.Client;
@@ -44,9 +43,9 @@ public static class Extensions
 
         builder.AddDefaultAuthentication();
 
-        //builder.Services
-        //    .AddFluentEmail(builder.Configuration["Email:SenderEmail"], builder.Configuration["Email:Sender"])
-        //    .AddSmtpSender(builder.Configuration["Email:Host"], builder.Configuration.GetValue<int>("Email:Port"));
+        builder.Services
+            .AddFluentEmail(builder.Configuration["Email:SenderEmail"], builder.Configuration["Email:Sender"])
+            .AddSmtpSender(builder.Configuration["Email:Host"], builder.Configuration.GetValue<int>("Email:Port"));
 
         var withApiVersioning = builder.Services.AddApiVersioning();
         builder.AddDefaultOpenApi(withApiVersioning);
