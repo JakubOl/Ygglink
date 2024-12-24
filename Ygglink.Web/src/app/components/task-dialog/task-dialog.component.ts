@@ -55,10 +55,6 @@ export class TaskDialogComponent implements OnInit {
   }
 
   removeSubtask(index: number): void {
-    const subtaskId = this.subtasks.at(index).value.id;
-    if (subtaskId !== 0) {
-      // Optionally handle deletion of existing subtasks
-    }
     this.subtasks.removeAt(index);
   }
 

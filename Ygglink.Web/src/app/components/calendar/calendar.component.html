@@ -25,7 +25,7 @@
                 {{ day.dayNumber }}
               </div>
               <div class="tasks">
-                <mat-card *ngFor="let task of day.tasks" class="task-card">
+                <mat-card *ngFor="let task of day.tasks" class="task-card" (click)="openAddTaskDialog(day.date, task)">
                   <mat-card-header>
                     <mat-card-title>{{ task.title }}</mat-card-title>
                     <button mat-icon-button (click)="deleteTask(task)" aria-label="Delete Task">

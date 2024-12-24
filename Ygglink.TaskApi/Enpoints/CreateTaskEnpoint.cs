@@ -1,4 +1,5 @@
 ﻿using System.Security.Claims;
+using FluentValidation;
 using Ygglink.ServiceDefaults.Extensions;
 using Ygglink.ServiceDefaults.Models.Abstract;
 using Ygglink.TaskApi.Dtos;
@@ -13,14 +14,16 @@ public class CreateTaskEnpoint : IEndpoint
         app.MapPost("task", 
                 async (TaskDbContext context, 
                 ClaimsPrincipal user, 
-                TaskItemDto taskDto) =>
+                TaskItemDto taskDto,
+                IValidator<TaskItemDto> validator) =>
                 {
                     var userId = user.GetUserGuid();
                     if (userId == Guid.Empty)
                         return Results.Unauthorized();
 
-                    if (taskDto == null)
-                        return Results.BadRequest(new { message = "Task data is required." });
+                    var validationResult = validator.Validate(taskDto);
+                    if (!validationResult.IsValid)
+                        return Results.BadRequest(validationResult.Errors.Select(e => e.ErrorMessage));
 
                     var task = taskDto.MapToEntity();
                     task.UserId = userId;
