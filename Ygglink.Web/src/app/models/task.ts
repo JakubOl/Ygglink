@@ -4,7 +4,7 @@ export interface TaskItem {
     guid: string;
     title: string;
     description: string;
-    date: string;
-    isRecurring: boolean;
+    startDate: string;
+    endDate: string;
     subtasks?: Subtask[];
 }

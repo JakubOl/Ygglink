@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Ygglink.ServiceDefaults.Extensions;
 using Ygglink.ServiceDefaults.Models.Abstract;
-using Ygglink.TaskApi.Dtos;
 using Ygglink.TaskApi.Infrastructure;
 
 namespace Ygglink.TaskApi.Enpoints;
@@ -31,29 +30,12 @@ public class GetTasksEndpoint : IEndpoint
 
                     var tasks = await context.Tasks
                         .Include(t => t.Subtasks)
-                        .Where(t => t.UserId == userId && t.IsRecurring || t.Date >= start && t.Date < end)
+                        .Where(t => t.UserId == userId && t.StartDate <= end && t.EndDate >= start)
+                        .Select(x => x.MapToDto())
                         .AsNoTracking()
                         .ToListAsync();
 
-                    var expandedTasks = new List<TaskItemDto>();
-                    foreach (var task in tasks)
-                    {
-                        if (task.IsRecurring)
-                        {
-                            for (int day = 1; day <= DateTime.DaysInMonth(start.Year, start.Month); day++)
-                            {
-                                var taskToAdd = task.MapToDto();
-                                taskToAdd.Date = new DateTime(start.Year, start.Month, day);
-                                expandedTasks.Add(taskToAdd);
-                            }
-                        }
-                        else
-                        {
-                            expandedTasks.Add(task.MapToDto());
-                        }
-                    }
-
-                    return Results.Ok(expandedTasks);
+                    return Results.Ok(tasks);
                 })
             .Produces(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status400BadRequest)

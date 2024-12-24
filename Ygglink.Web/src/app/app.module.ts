@@ -18,7 +18,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-
+import { MatDatepickerModule } from '@angular/material/datepicker';
 
 // Components and Routing
 import { AppComponent } from './app.component';
@@ -36,6 +36,7 @@ import { CalendarComponent } from './components/calendar/calendar.component';
 import { HomeComponent } from './components/home/home.component';
 import { TaskDialogComponent } from './components/task-dialog/task-dialog.component';
 import { httpInterceptorProviders } from './interceptors/http.interceptor';
+import { provideNativeDateAdapter } from '@angular/material/core';
 
 @NgModule({
   declarations: [
@@ -57,7 +58,7 @@ import { httpInterceptorProviders } from './interceptors/http.interceptor';
     BrowserAnimationsModule,
     HttpClientModule,
     FormsModule,
-    
+
     // Material Modules
     MatFormFieldModule,
     MatInputModule,
@@ -69,15 +70,15 @@ import { httpInterceptorProviders } from './interceptors/http.interceptor';
     MatIconModule,
     MatDividerModule,
     MatProgressSpinnerModule,
-
-    LayoutModule,
-
+    MatDatepickerModule,
     MatGridListModule,
     MatDialogModule,
     MatCheckboxModule,
     MatSnackBarModule,
+
+    LayoutModule,
   ],
-  providers: [httpInterceptorProviders],
+  providers: [httpInterceptorProviders, provideNativeDateAdapter()],
   bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule { }

@@ -8,6 +8,7 @@ public class SubtaskDtoValidator : AbstractValidator<SubtaskDto>
     public SubtaskDtoValidator()
     {
         RuleFor(x => x.Title)
-            .NotEmpty().WithMessage("Subtask title is required.");
+            .NotEmpty().WithMessage("Subtask title is required.")
+            .MaximumLength(100).WithMessage("Subtask title cannot exceed 100 characters.");
     }
 }

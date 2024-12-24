@@ -2,7 +2,6 @@
 <h1 mat-dialog-title>{{ isEditMode ? 'Edit Task' : 'Add Task' }}</h1>
 <div mat-dialog-content>
     <form [formGroup]="taskForm">
-        <!-- Title Field -->
         <mat-form-field appearance="fill" class="full-width">
             <mat-label>Title</mat-label>
             <input matInput formControlName="title" maxlength="100" />
@@ -15,7 +14,6 @@
             </mat-error>
         </mat-form-field>
 
-        <!-- Description Field -->
         <mat-form-field appearance="fill" class="full-width">
             <mat-label>Description</mat-label>
             <textarea matInput formControlName="description" maxlength="500"></textarea>
@@ -28,10 +26,17 @@
             </mat-error>
         </mat-form-field>
 
-        <!-- Recurring Checkbox -->
-        <mat-checkbox formControlName="isRecurring">Recurring Daily</mat-checkbox>
+        <mat-form-field appearance="fill" class="full-width">
+            <mat-label>Enter a date range</mat-label>
+            <mat-date-range-input [rangePicker]="picker">
+                <input formControlName="startDate" matStartDate placeholder="Start date">
+                <input formControlName="endDate" matEndDate placeholder="End date">
+            </mat-date-range-input>
+            <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-date-range-picker #picker></mat-date-range-picker>
+        </mat-form-field>
 
-        <!-- Subtasks Section -->
         <div formArrayName="subtasks" class="subtasks-section">
             <h3>Subtasks</h3>
             <button mat-mini-fab color="primary" (click)="addSubtask()" type="button" aria-label="Add Subtask">

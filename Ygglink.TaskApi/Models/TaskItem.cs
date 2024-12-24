@@ -18,10 +18,12 @@ public class TaskItem
     [StringLength(500, ErrorMessage = "Description cannot exceed 500 characters.")]
     public string Description { get; set; }
 
-    [Required(ErrorMessage = "Date is required.")]
-    public DateTime Date { get; set; }
+    [Required(ErrorMessage = "Start date is required.")]
+    public DateTime StartDate { get; set; }
 
-    public bool IsRecurring { get; set; }
+    [Required(ErrorMessage = "End date is required.")]
+    public DateTime EndDate { get; set; }
+
     public Guid UserId { get; set; }
     public ICollection<Subtask> Subtasks { get; set; }
 
@@ -30,10 +32,10 @@ public class TaskItem
         return new TaskItemDto
         {
             Guid = Guid,
-            Date = Date,
+            StartDate = StartDate,
+            EndDate = EndDate,
             Title = Title,
             Description = Description,
-            IsRecurring = IsRecurring,
             Subtasks = Subtasks.Select(st => st.MapToDto()).ToList(),
         };
     }

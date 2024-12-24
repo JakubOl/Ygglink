@@ -1,14 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Ygglink.TaskApi.Models;
+﻿using Ygglink.TaskApi.Models;
 
 namespace Ygglink.TaskApi.Dtos;
 
 public class SubtaskDto
 {
-    [Required]
-    [StringLength(100, ErrorMessage = "Subtask title cannot exceed 100 characters.")]
     public string Title { get; set; }
-
     public bool IsCompleted { get; set; }
 
     public Subtask MapToEntity()

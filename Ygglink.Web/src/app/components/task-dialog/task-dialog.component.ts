@@ -1,4 +1,3 @@
-// src/app/components/task-dialog/task-dialog.component.ts
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
@@ -16,7 +15,6 @@ import { Guid } from 'guid-typescript';
 })
 export class TaskDialogComponent implements OnInit {
   taskForm: FormGroup;
-  date: Date;
   isEditMode: boolean = false;
 
   constructor(
@@ -26,11 +24,11 @@ export class TaskDialogComponent implements OnInit {
     private fb: FormBuilder,
     private snackBar: MatSnackBar
   ) {
-    this.date = data.date;
     this.taskForm = this.fb.group({
       title: ['', [Validators.required, Validators.maxLength(100)]],
       description: ['', [Validators.required, Validators.maxLength(500)]],
-      isRecurring: [false],
+      startDate: ['', [Validators.required]],
+      endDate: ['', [Validators.required]],
       subtasks: this.fb.array([])
     });
 
@@ -62,7 +60,8 @@ export class TaskDialogComponent implements OnInit {
     this.taskForm.patchValue({
       title: task.title,
       description: task.description,
-      isRecurring: task.isRecurring
+      startDate: task.startDate,
+      endDate: task.endDate
     });
 
     if (task.subtasks) {
@@ -87,8 +86,8 @@ export class TaskDialogComponent implements OnInit {
         guid: this.isEditMode && this.data.task ? this.data.task.guid : Guid.create().toString(),
         title: formValue.title,
         description: formValue.description,
-        date: moment(this.date).format('YYYY-MM-DD'),
-        isRecurring: formValue.isRecurring,
+        startDate: moment(formValue.startDate).format('YYYY-MM-DD'),
+        endDate: moment(formValue.endDate).format('YYYY-MM-DD'),
         subtasks: formValue.subtasks.map((st: any) => ({
           title: st.title,
           isCompleted: st.isCompleted
