@@ -33,6 +33,7 @@ public class CreateTaskEnpoint : IEndpoint
 
                     return Results.Created($"/tasks/{task.Id}", task);
                 })
+            .Accepts<TaskItemDto>("application/json")
             .Produces(StatusCodes.Status201Created)
             .Produces(StatusCodes.Status400BadRequest)
             .Produces(StatusCodes.Status401Unauthorized)

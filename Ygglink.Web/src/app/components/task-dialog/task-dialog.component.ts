@@ -80,45 +80,47 @@ export class TaskDialogComponent implements OnInit {
   }
 
   saveTask(): void {
-    if (this.taskForm.valid) {
-      const formValue = this.taskForm.value;
-      const task: TaskItem = {
-        guid: this.isEditMode && this.data.task ? this.data.task.guid : Guid.create().toString(),
-        title: formValue.title,
-        description: formValue.description,
-        startDate: moment(formValue.startDate).format('YYYY-MM-DD'),
-        endDate: moment(formValue.endDate).format('YYYY-MM-DD'),
-        subtasks: formValue.subtasks.map((st: any) => ({
-          title: st.title,
-          isCompleted: st.isCompleted
-        }))
-      };
-
-      if (this.isEditMode) {
-        this.taskService.updateTask(task).subscribe({
-          next: () => {
-            this.snackBar.open('Task updated successfully!', 'Close', { duration: 3000 });
-            this.dialogRef.close('refresh');
-          },
-          error: (err) => {
-            this.snackBar.open('Failed to update task. Please try again.', 'Close', { duration: 3000 });
-          }
-        });
-      } else {
-        this.taskService.addTask(task).subscribe({
-          next: () => {
-            this.snackBar.open('Task added successfully!', 'Close', { duration: 3000 });
-            this.dialogRef.close('refresh');
-          },
-          error: () => {
-            console.error();
-            this.snackBar.open('Failed to add task. Please try again.', 'Close', { duration: 3000 });
-          }
-        });
-      }
-    } else {
+    if (!this.taskForm.valid){
       this.taskForm.markAllAsTouched();
       this.snackBar.open('Please correct the errors in the form.', 'Close', { duration: 3000 });
+      return;
     }
+    
+    const formValue = this.taskForm.value;
+    const task: TaskItem = {
+      guid: this.isEditMode && this.data.task ? this.data.task.guid : Guid.create().toString(),
+      title: formValue.title,
+      description: formValue.description,
+      startDate: moment(formValue.startDate).format('YYYY-MM-DD'),
+      endDate: moment(formValue.endDate).format('YYYY-MM-DD'),
+      subtasks: formValue.subtasks.map((st: any) => ({
+        title: st.title,
+        isCompleted: st.isCompleted
+      }))
+    };
+
+    if (this.isEditMode) {
+      this.taskService.updateTask(task).subscribe({
+        next: () => {
+          this.snackBar.open('Task updated successfully!', 'Close', { duration: 3000 });
+          this.dialogRef.close('refresh');
+        },
+        error: (err) => {
+          this.snackBar.open('Failed to update task. Please try again.', 'Close', { duration: 3000 });
+        }
+      });
+      return;
+    }
+
+    this.taskService.addTask(task).subscribe({
+      next: () => {
+        this.snackBar.open('Task added successfully!', 'Close', { duration: 3000 });
+        this.dialogRef.close('refresh');
+      },
+      error: () => {
+        console.error();
+        this.snackBar.open('Failed to add task. Please try again.', 'Close', { duration: 3000 });
+      }
+    });
   }
 }

@@ -28,7 +28,7 @@ export class TaskService {
   }
 
   updateTask(task: TaskItem): Observable<void> {
-    return this.http.put<void>(`${environment.TASK_API}/${task.guid}`, task, httpOptions);
+    return this.http.put<void>(environment.TASK_API, task, httpOptions);
   }
 
   deleteTask(id: string): Observable<void> {

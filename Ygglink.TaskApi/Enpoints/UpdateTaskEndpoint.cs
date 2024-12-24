@@ -33,13 +33,17 @@ public class UpdateTaskEndpoint : IEndpoint
                     if (task == null)
                         return Results.NotFound(new { message = "Task does not exist!" });
 
-                    task = taskDto.MapToEntity();
-                    task.UserId = userId;
+                    task.Title = taskDto.Title;
+                    task.Description = taskDto.Description;
+                    task.StartDate = taskDto.StartDate;
+                    task.EndDate = taskDto.EndDate;
+                    task.Subtasks = taskDto.Subtasks.Select(x => x.MapToEntity()).ToList();
 
                     await context.SaveChangesAsync();
 
                     return Results.Created($"/tasks/{task.Id}", task);
                 })
+            .Accepts<TaskItemDto>("application/json")
             .Produces(StatusCodes.Status201Created)
             .Produces(StatusCodes.Status400BadRequest)
             .Produces(StatusCodes.Status401Unauthorized)
