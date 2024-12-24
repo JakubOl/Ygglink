@@ -20,7 +20,7 @@ namespace Ygglink.ServiceDefaults.Extensions;
 
 public static class Extensions
 {
-    public static TBuilder AddServiceDefaults<TBuilder>(this TBuilder builder) where TBuilder : IHostApplicationBuilder
+    public static TBuilder AddServiceDefaults<TBuilder>(this TBuilder builder, Assembly assembly) where TBuilder : IHostApplicationBuilder
     {
         builder.ConfigureOpenTelemetry();
         builder.AddDefaultHealthChecks();
@@ -44,10 +44,16 @@ public static class Extensions
 
         builder.AddDefaultAuthentication();
 
-        builder.Services
-            .AddFluentEmail(builder.Configuration["Email:SenderEmail"], builder.Configuration["Email:Sender"])
-            .AddSmtpSender(builder.Configuration["Email:Host"], builder.Configuration.GetValue<int>("Email:Port"));
+        //builder.Services
+        //    .AddFluentEmail(builder.Configuration["Email:SenderEmail"], builder.Configuration["Email:Sender"])
+        //    .AddSmtpSender(builder.Configuration["Email:Host"], builder.Configuration.GetValue<int>("Email:Port"));
 
+        var withApiVersioning = builder.Services.AddApiVersioning();
+        builder.AddDefaultOpenApi(withApiVersioning);
+
+        builder.Services.AddEndpoints(assembly);
+        builder.Services.AddEndpointsApiExplorer();
+        builder.Services.AddValidatorsFromAssembly(assembly);
 
         return builder;
     }

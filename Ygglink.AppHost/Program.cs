@@ -9,11 +9,6 @@ var cache = builder
     .WithLifetime(ContainerLifetime.Persistent)
     .WithRedisInsight();
 
-//var papercut = builder.AddContainer("papercut", "changemakerstudiosus/papercut-smtp", "latest")
-//    .WithHttpsEndpoint(port: 25, targetPort: 25)
-//    .WithHttpEndpoint(port: 8050, targetPort: 8050)
-//    .WithLifetime(ContainerLifetime.Persistent);
-
 var sqlServer = builder
     .AddSqlServer("sql")
     .WithImage("mssql/server")
@@ -24,7 +19,7 @@ var sqlServer = builder
 var identityDb = sqlServer.AddDatabase("IdentityDatabase");
 var taskDb = sqlServer.AddDatabase("TaskDatabase");
 
-var identityApi = builder.AddProject<Projects.Ygglink_IdentityApi>("ygglink-identityapi", "https")
+var identityApi = builder.AddProject<Projects.Ygglink_IdentityApi>("ygglink-identityapi")
     .WaitFor(identityDb)
     .WithReference(identityDb);
 

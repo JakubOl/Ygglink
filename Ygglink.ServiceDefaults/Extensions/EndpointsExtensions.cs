@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using System.Reflection;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -8,11 +9,9 @@ namespace Ygglink.ServiceDefaults.Extensions;
 
 public static class EndpointsExtensions
 {
-    public static IServiceCollection AddEndpoints(this IServiceCollection services, Type type)
+    public static IServiceCollection AddEndpoints(this IServiceCollection services, Assembly assembly)
     {
-        var t = type.Assembly;
-
-        ServiceDescriptor[] serviceDescriptors = type.Assembly
+        ServiceDescriptor[] serviceDescriptors = assembly
             .DefinedTypes
             .Where(type => type is { IsAbstract: false, IsInterface: false }
                 && type.IsAssignableTo(typeof(IEndpoint)))

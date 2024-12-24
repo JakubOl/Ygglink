@@ -5,7 +5,7 @@ using Ygglink.Worker.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.AddServiceDefaults();
+builder.AddServiceDefaults(typeof(Program).Assembly);
 
 builder.Services
     .AddHangfire(x =>

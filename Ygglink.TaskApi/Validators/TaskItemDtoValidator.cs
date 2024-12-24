@@ -17,6 +17,6 @@ public class TaskItemDtoValidator : AbstractValidator<TaskItemDto>
             .NotNull().WithMessage("Date is required.");
 
         RuleFor(x => x.Subtasks)
-            .SetValidator(SubtaskDtoValidator);
+            .ForEach(x => x.SetValidator(new SubtaskDtoValidator()));
     }
 }
