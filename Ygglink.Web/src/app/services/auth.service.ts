@@ -8,6 +8,11 @@ const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })
 };
 
+interface DecodedToken {
+  exp: number;
+  iat?: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -17,17 +22,13 @@ export class AuthService {
   login(credentials: { email: string; password: string; }): Observable<void> {
     return this.http
       .post<{ token: string }>(environment.AUTH_API + "login", credentials, httpOptions)
-      .pipe(
-        map(response => this.storeToken(response.token)),
-        catchError((error: HttpErrorResponse) => throwError(error)));
+      .pipe(map(response => this.storeToken(response.token)));
   }
 
   register(credentials: { Email: string; Password: string; ConfirmPassword: string; }): Observable<any> {
     return this.http
       .post(environment.AUTH_API + 'register', credentials, httpOptions)
-      .pipe(
-        map(response => response),
-        catchError((error: HttpErrorResponse) => throwError(error)));
+      .pipe(map(response => response));
   }
 
   verifyEmail(UserId: any, Token: any): Observable<any> {
@@ -44,7 +45,14 @@ export class AuthService {
   }
 
   getToken(): string | null {
-    return localStorage.getItem(environment.TOKEN_KEY);
+    const token = localStorage.getItem(environment.TOKEN_KEY);
+    if(this.isTokenExpired(token))
+    {
+      localStorage.removeItem(environment.TOKEN_KEY);
+      return null;
+    }
+
+    return token;
   }
 
   isLoggedIn(): boolean {
@@ -86,5 +94,24 @@ export class AuthService {
   hasRole(role: string): boolean {
     const roles = this.getUserRoles();
     return roles.includes(role);
+  }
+
+  isTokenExpired(token: string | null): boolean {
+    if (!token) 
+      return true;
+  
+    try 
+    {
+      const decoded = jwtDecode<DecodedToken>(token);
+      if (!decoded.exp)
+        return false;
+      
+      const nowSeconds = Math.floor(Date.now() / 1000);
+      return decoded.exp < nowSeconds;
+    } 
+    catch (e) 
+    {
+      return true;
+    }
   }
 }
