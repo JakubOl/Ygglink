@@ -1,11 +1,12 @@
-import { Component, Inject, OnInit } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
-import moment from 'moment';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { TaskService } from '../../services/task-service.service';
-import { TaskItem } from '../../models/task';
-import { Guid } from 'guid-typescript';
+import { Component, Inject } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { Task } from '../../models/task';
+import { Guid } from "guid-typescript";
+
+interface TaskDialogData {
+  isEdit: boolean;
+  task?: Task;
+}
 
 @Component({
   selector: 'app-task-dialog',
@@ -13,114 +14,150 @@ import { Guid } from 'guid-typescript';
   styleUrls: ['./task-dialog.component.scss'],
   standalone: false
 })
-export class TaskDialogComponent implements OnInit {
-  taskForm: FormGroup;
-  isEditMode: boolean = false;
+export class TaskDialogComponent {
+  isEdit = false;
+  editTask?: Task;
+
+  title = '';
+  priority: 'low' | 'medium' | 'high' = 'low';
+
+  startDate: Date = new Date();
+  startTime: string = '09:00';
+
+  endDate: Date = new Date();
+  endTime: string = '10:00';
+
+  weekdays = [
+    { label: 'Sun', day: 0, selected: true },
+    { label: 'Mon', day: 1, selected: true },
+    { label: 'Tue', day: 2, selected: true },
+    { label: 'Wed', day: 3, selected: true },
+    { label: 'Thu', day: 4, selected: true },
+    { label: 'Fri', day: 5, selected: true },
+    { label: 'Sat', day: 6, selected: true }
+  ];
 
   constructor(
-    public dialogRef: MatDialogRef<TaskDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any,
-    private taskService: TaskService,
-    private fb: FormBuilder,
-    private snackBar: MatSnackBar
+    private dialogRef: MatDialogRef<TaskDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: TaskDialogData
   ) {
-    this.taskForm = this.fb.group({
-      title: ['', [Validators.required, Validators.maxLength(100)]],
-      description: ['', [Validators.required, Validators.maxLength(500)]],
-      startDate: ['', [Validators.required]],
-      endDate: ['', [Validators.required]],
-      subtasks: this.fb.array([])
-    });
+    this.isEdit = data.isEdit;
 
-    if (data.task) {
-      this.isEditMode = true;
-      this.loadTask(data.task);
+    if (this.isEdit && data.task) {
+      this.editTask = { ...data.task };
+    } else {
+      this.startDate = new Date();
+      this.endDate = new Date();
     }
   }
 
-  ngOnInit(): void { }
-
-  get subtasks(): FormArray {
-    return this.taskForm.get('subtasks') as FormArray;
-  }
-
-  addSubtask(): void {
-    this.subtasks.push(this.fb.group({
-      id: [0],
-      title: ['', [Validators.required, Validators.maxLength(100)]],
-      isCompleted: [false]
-    }));
-  }
-
-  removeSubtask(index: number): void {
-    this.subtasks.removeAt(index);
-  }
-
-  loadTask(task: TaskItem): void {
-    this.taskForm.patchValue({
-      title: task.title,
-      description: task.description,
-      startDate: task.startDate,
-      endDate: task.endDate
-    });
-
-    if (task.subtasks) {
-      task.subtasks.forEach(st => {
-        this.subtasks.push(this.fb.group({
-          id: [st.id],
-          title: [st.title, [Validators.required, Validators.maxLength(100)]],
-          isCompleted: [st.isCompleted]
-        }));
-      });
-    }
-  }
-
-  onNoClick(): void {
-    this.dialogRef.close();
-  }
-
-  saveTask(): void {
-    if (!this.taskForm.valid){
-      this.taskForm.markAllAsTouched();
-      this.snackBar.open('Please correct the errors in the form.', 'Close', { duration: 3000 });
-      return;
-    }
-    
-    const formValue = this.taskForm.value;
-    const task: TaskItem = {
-      guid: this.isEditMode && this.data.task ? this.data.task.guid : Guid.create().toString(),
-      title: formValue.title,
-      description: formValue.description,
-      startDate: moment(formValue.startDate).format(),
-      endDate: moment(formValue.endDate).add(23, "hours").add(59, "minutes").add(59, "seconds").format(),
-      subtasks: formValue.subtasks.map((st: any) => ({
-        title: st.title,
-        isCompleted: st.isCompleted
-      }))
-    };
-
-    if (this.isEditMode) {
-      this.taskService.updateTask(task).subscribe({
-        next: () => {
-          this.snackBar.open('Task updated successfully!', 'Close', { duration: 3000 });
-          this.dialogRef.close('refresh');
-        },
-        error: (err) => {
-          this.snackBar.open('Failed to update task. Please try again.', 'Close', { duration: 3000 });
-        }
-      });
+  onSubmit() {
+    if (this.isEdit && this.editTask) {
+      this.dialogRef.close([this.editTask]);
       return;
     }
 
-    this.taskService.addTask(task).subscribe({
-      next: () => {
-        this.snackBar.open('Task added successfully!', 'Close', { duration: 3000 });
-        this.dialogRef.close('refresh');
-      },
-      error: () => {
-        console.error();
-        this.snackBar.open('Failed to add task. Please try again.', 'Close', { duration: 3000 });
+    const tasksToCreate: Task[] = [];
+
+    const [startHour, startMin] = this.startTime.split(':').map(Number);
+    const [endHour, endMin] = this.endTime.split(':').map(Number);
+
+    const fromDate = new Date(this.startDate);
+    const toDate = new Date(this.endDate);
+
+    if (fromDate > toDate) {
+      alert('Start date must be before end date.');
+      return;
+    }
+
+    let currentDate = new Date(fromDate.getTime());
+
+    while (currentDate <= toDate) {
+      const dayOfWeek = currentDate.getDay();
+      const isSelectedDay = this.weekdays.find(
+        (w) => w.day === dayOfWeek && w.selected
+      );
+      if (isSelectedDay) {
+        const start = new Date(
+          currentDate.getFullYear(),
+          currentDate.getMonth(),
+          currentDate.getDate(),
+          startHour,
+          startMin
+        );
+        const end = new Date(
+          currentDate.getFullYear(),
+          currentDate.getMonth(),
+          currentDate.getDate(),
+          endHour,
+          endMin
+        );
+
+        const newTask: Task = {
+          id: Guid.create().toString(),
+          title: this.title,
+          start,
+          end,
+          priority: this.priority
+        };
+        tasksToCreate.push(newTask);
       }
-    });
+
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+
+    if (!tasksToCreate.length) {
+      const start = new Date(
+        fromDate.getFullYear(),
+        fromDate.getMonth(),
+        fromDate.getDate(),
+        startHour,
+        startMin
+      );
+      const end = new Date(
+        fromDate.getFullYear(),
+        fromDate.getMonth(),
+        fromDate.getDate(),
+        endHour,
+        endMin
+      );
+      tasksToCreate.push({
+        id: Guid.create().toString(),
+        title: this.title,
+        start,
+        end,
+        priority: this.priority
+      });
+    }
+
+    this.dialogRef.close(tasksToCreate);
+  }
+
+  onEditStartTimeChange(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const value = input.value;
+    if (!this.editTask) return;
+  
+    const [hours, minutes] = value.split(':').map(Number);
+    const tempDate = new Date(this.editTask.start);
+    tempDate.setHours(hours || 0);
+    tempDate.setMinutes(minutes || 0);
+    this.editTask.start = tempDate;
+  }
+  
+  onEditEndTimeChange(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const value = input.value;
+    if (!this.editTask) return;
+  
+    const [hours, minutes] = value.split(':').map(Number);
+    const tempDate = new Date(this.editTask.end || this.editTask.start);
+    tempDate.setHours(hours || 0);
+    tempDate.setMinutes(minutes || 0);
+    this.editTask.end = tempDate;
+  }
+
+  onCancel() {
+    this.dialogRef.close(undefined);
   }
 }

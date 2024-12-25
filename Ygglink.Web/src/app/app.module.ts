@@ -19,6 +19,14 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatSelectModule } from '@angular/material/select';
+import { MatChipsModule } from '@angular/material/chips';
+import { DragAndDropModule } from 'angular-draggable-droppable';
+
+// Angular Calendar
+import { CalendarModule, DateAdapter } from 'angular-calendar';
+import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 
 // Components and Routing
 import { AppComponent } from './app.component';
@@ -75,6 +83,15 @@ import { provideNativeDateAdapter } from '@angular/material/core';
     MatDialogModule,
     MatCheckboxModule,
     MatSnackBarModule,
+
+    MatMenuModule,
+    MatSelectModule,
+    MatChipsModule,
+    DragAndDropModule,
+    CalendarModule.forRoot({
+      provide: DateAdapter,
+      useFactory: adapterFactory
+    }),
 
     LayoutModule,
   ],

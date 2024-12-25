@@ -1,23 +1,18 @@
-/* src/app/components/task-dialog/task-dialog.component.css */
-.full-width {
-    width: 100%;
-}
-
-.subtasks-section {
-    margin-top: 20px;
-}
-
-.subtask-item {
+.date-time-row {
     display: flex;
-    align-items: center;
-    margin-top: 10px;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+    flex-wrap: wrap;
+
+    mat-form-field {
+        width: 100%;
+        flex: 1;
+    }
 }
 
-.subtask-input {
-    flex: 1;
-    margin-right: 10px;
-}
-
-button[mat-mini-fab] {
-    margin-bottom: 10px;
+.weekdays-checkboxes {
+    margin-top: 1rem;
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
 }

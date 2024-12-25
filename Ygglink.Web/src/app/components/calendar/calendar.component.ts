@@ -1,114 +1,224 @@
-import { Component, OnInit } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ChangeDetectionStrategy,
+  ViewEncapsulation
+} from '@angular/core';
+import {
+  CalendarEvent,
+  CalendarView,
+  CalendarEventTimesChangedEvent
+} from 'angular-calendar';
+import { Subject } from 'rxjs';
+import { addDays } from 'date-fns';
 import { MatDialog } from '@angular/material/dialog';
-import moment from 'moment';
-import { CalendarDay } from '../../models/calendarday';
-import { TaskService } from '../../services/task-service.service';
-import { TaskItem } from '../../models/task';
 import { TaskDialogComponent } from '../task-dialog/task-dialog.component';
-import { Subtask } from '../../models/subtask';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { Task } from '../../models/task';
+import { Guid } from 'guid-typescript';
 
 @Component({
   selector: 'app-calendar',
-  standalone: false,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './calendar.component.html',
-  styleUrl: './calendar.component.scss'
+  styleUrls: ['./calendar.component.scss'],
+  encapsulation: ViewEncapsulation.None,
+  standalone: false
 })
-export class CalendarComponent {
-  currentDate: moment.Moment = moment();
-  weeks: CalendarDay[][] = [];
-  isLoading: boolean = false;
+export class CalendarComponent implements OnInit {
+  view: CalendarView = CalendarView.Month;
+  CalendarView = CalendarView;
+  viewDate: Date = new Date();
+  refresh: Subject<any> = new Subject<any>();
 
-  constructor(private taskService: TaskService, public dialog: MatDialog, private snackBar: MatSnackBar) { }
+  tasks: Task[] = [
+    {
+      id: Guid.create().toString(),
+      title: 'Project Meeting',
+      start: new Date(2024, 11, 12, 9, 0),
+      end: new Date(2024, 11, 12, 10, 0),
+      priority: 'high'
+    },
+    {
+      id: Guid.create().toString(),
+      title: 'Buy Groceries',
+      start: new Date(2024, 11, 12, 17, 0),
+      end: new Date(2024, 11, 12, 18, 0),
+      priority: 'medium'
+    },
+    {
+      id: Guid.create().toString(),
+      title: 'Project Meeting',
+      start: new Date(2024, 11, 12, 9, 0),
+      end: new Date(2024, 11, 12, 10, 0),
+      priority: 'high'
+    },
+    {
+      id: Guid.create().toString(),
+      title: 'Buy Groceries',
+      start: new Date(2024, 11, 12, 17, 0),
+      end: new Date(2024, 11, 12, 18, 0),
+      priority: 'medium'
+    },
+    {
+      id: Guid.create().toString(),
+      title: 'Project Meeting',
+      start: new Date(2024, 11, 12, 9, 0),
+      end: new Date(2024, 11, 12, 10, 0),
+      priority: 'high'
+    },
+    {
+      id: Guid.create().toString(),
+      title: 'Buy Groceries',
+      start: new Date(2024, 11, 12, 17, 0),
+      end: new Date(2024, 11, 12, 18, 0),
+      priority: 'medium'
+    },
+    {
+      id: Guid.create().toString(),
+      title: 'Project Meeting',
+      start: new Date(2024, 11, 12, 9, 0),
+      end: new Date(2024, 11, 12, 10, 0),
+      priority: 'high'
+    },
+    {
+      id: Guid.create().toString(),
+      title: 'Buy Groceries',
+      start: new Date(2024, 11, 12, 17, 0),
+      end: new Date(2024, 11, 12, 18, 0),
+      priority: 'medium'
+    },
+    {
+      id: Guid.create().toString(),
+      title: 'Project Meeting',
+      start: new Date(2024, 11, 12, 9, 0),
+      end: new Date(2024, 11, 12, 10, 0),
+      priority: 'high'
+    },
+    {
+      id: Guid.create().toString(),
+      title: 'Buy Groceries',
+      start: new Date(2024, 11, 12, 17, 0),
+      end: new Date(2024, 11, 12, 18, 0),
+      priority: 'medium'
+    },
+    {
+      id: Guid.create().toString(),
+      title: 'Project Meeting',
+      start: new Date(2024, 11, 12, 9, 0),
+      end: new Date(2024, 11, 12, 10, 0),
+      priority: 'high'
+    },
+    {
+      id: Guid.create().toString(),
+      title: 'Buy Groceries',
+      start: new Date(2024, 11, 12, 17, 0),
+      end: new Date(2024, 11, 12, 18, 0),
+      priority: 'medium'
+    }
+  ];
+
+  events: CalendarEvent[] = [];
+
+  constructor(private dialog: MatDialog) { }
 
   ngOnInit(): void {
-    this.generateCalendar();
+    this.loadEvents();
   }
 
-  generateCalendar(): void {
-    this.isLoading = true;
-    const startOfMonth = this.currentDate.clone().startOf('month');
-    const endOfMonth = this.currentDate.clone().endOf('month');
-
-    const startDate = startOfMonth.clone().startOf('week');
-    const endDate = endOfMonth.clone().endOf('week');
-
-    const month = this.currentDate.format('YYYY-MM');
-
-    this.taskService.getTasks(month).subscribe({
-      next: (tasks) => {
-        let current = startDate.clone();
-        const weeks: CalendarDay[][] = [];
-
-        while (current.isBefore(endDate, 'day')) {
-          const week: CalendarDay[] = [];
-          for (let i = 0; i < 7; i++) {
-            const date = current.clone().add(1, "minute");
-            const dayTasks = tasks.filter(task => moment(date).isBetween(moment(task.startDate), moment(task.endDate)));
-            week.push({
-              date: date.toDate(),
-              tasks: dayTasks,
-              dayNumber: date.date(),
-              isCurrentMonth: date.month() === this.currentDate.month()
-            });
-            current.add(1, 'day');
-          }
-          weeks.push(week);
+  loadEvents(): void {
+    this.events = this.tasks.map((task) => {
+      return {
+        id: task.id,
+        title: task.title,
+        start: new Date(task.start),
+        end: task.end ? new Date(task.end) : undefined,
+        color: this.getPriorityColor(task.priority),
+        draggable: true,
+        resizable: { beforeStart: true, afterEnd: true },
+        meta: {
+          priority: task.priority
         }
-
-        this.weeks = weeks;
-        this.isLoading = false;
-      },
-      error: (err) => {
-        this.isLoading = false;
-        this.snackBar.open(`Failed to fetch tasks. Please try again.`, 'Close', { duration: 3000 });
-      }
+      };
     });
+    this.refresh.next(null);
   }
 
-  prevMonth(): void {
-    this.currentDate = this.currentDate.subtract(1, 'month');
-    this.generateCalendar();
-  }
+  eventClicked(event: CalendarEvent) {
+    const task = this.tasks.find((t) => t.id === event.id);
+    if (!task)
+      return;
 
-  nextMonth(): void {
-    this.currentDate = this.currentDate.add(1, 'month');
-    this.generateCalendar();
-  }
-
-  openAddTaskDialog(date: Date, task?: TaskItem): void {
-    const dialogRef = this.dialog.open(TaskDialogComponent, {
-      width: '400px',
-      data: { date, task }
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result === 'refresh') {
-        this.generateCalendar();
-      }
-    });
-  }
-
-  deleteTask(task: TaskItem): void {
-    this.taskService.deleteTask(task.guid).subscribe({
-      next: () => this.generateCalendar(),
-      error: (err) => this.snackBar.open('Failed to delete task. Please try again.', 'Close', { duration: 3000 })
-    });
-  }
-
-  toggleSubtaskCompletion(task: TaskItem, subtask: Subtask): void {
-    if (task.subtasks) {
-      const updatedSubtasks = task.subtasks.map(st => {
-        if (st.id === subtask.id) {
-          return { ...st, isCompleted: !st.isCompleted };
+    this.dialog
+      .open(TaskDialogComponent, {
+        width: '400px',
+        data: { isEdit: true, task: { ...task } }
+      })
+      .afterClosed()
+      .subscribe((updatedTask: Task[] | undefined) => {
+        if (updatedTask) {
+          this.applyTaskChanges(updatedTask[0]);
         }
-        return st;
       });
-      const updatedTask: TaskItem = { ...task, subtasks: updatedSubtasks };
-      this.taskService.updateTask(updatedTask).subscribe({
-        next: () => this.generateCalendar(),
-        error: (err) => this.snackBar.open('Failed to toggle task completion. Please try again.', 'Close', { duration: 3000 })
-      });
+  }
+
+  eventTimesChanged({
+    event,
+    newStart,
+    newEnd
+  }: CalendarEventTimesChangedEvent): void {
+    const foundIndex = this.tasks.findIndex((t) => t.id === event.id);
+    if (foundIndex !== -1) {
+      this.tasks[foundIndex].start = newStart;
+      this.tasks[foundIndex].end = newEnd || undefined;
+      this.loadEvents();
     }
+  }
+
+  addNewTask() {
+    this.dialog
+      .open(TaskDialogComponent, {
+        width: '400px',
+        data: { isEdit: false }
+      })
+      .afterClosed()
+      .subscribe((newTasks: Task[] | undefined) => {
+        if (newTasks?.length) {
+          newTasks.forEach((t) => this.tasks.push(t));
+          this.loadEvents();
+        }
+      });
+  }
+
+  applyTaskChanges(updated: Task) {
+    const index = this.tasks.findIndex((t) => t.id === updated.id);
+    if (index !== -1) {
+      this.tasks[index] = updated;
+      this.loadEvents();
+    }
+  }
+
+  getPriorityColor(priority: 'low' | 'medium' | 'high') {
+    switch (priority) {
+      case 'high':
+        return { primary: '#e91e63', secondary: '#f8bbd0' };
+      case 'medium':
+        return { primary: '#ff9800', secondary: '#ffe0b2' };
+      default:
+        return { primary: '#4caf50', secondary: '#c8e6c9' };
+    }
+  }
+
+  setView(view: CalendarView) {
+    this.view = view;
+  }
+
+  previousDay() {
+    this.viewDate = addDays(this.viewDate, -1);
+  }
+  nextDay() {
+    this.viewDate = addDays(this.viewDate, 1);
+  }
+  today() {
+    this.viewDate = new Date();
   }
 }

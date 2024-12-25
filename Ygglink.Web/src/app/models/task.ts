@@ -1,10 +1,10 @@
 import { Subtask } from "./subtask";
 
-export interface TaskItem {
-    guid: string;
+export interface Task {
+    id: string;
     title: string;
-    description: string;
-    startDate: string;
-    endDate: string;
+    start: Date;
+    end?: Date;
+    priority: 'low' | 'medium' | 'high';
     subtasks?: Subtask[];
 }

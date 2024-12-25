@@ -1,8 +1,8 @@
-import { TaskItem } from "./task";
+import { Task } from "./task";
 
 export interface CalendarDay {
     date: Date;
-    tasks: TaskItem[];
+    tasks: Task[];
     dayNumber: number;
     isCurrentMonth: boolean;
 }
