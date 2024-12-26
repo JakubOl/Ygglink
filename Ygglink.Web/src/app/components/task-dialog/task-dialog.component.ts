@@ -2,9 +2,8 @@ import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Task } from '../../models/task';
 import { Guid } from "guid-typescript";
-import { TaskService } from "../../services/task-service.service";
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import moment from 'moment';
 
 interface TaskDialogData {
   isEdit: boolean;
@@ -20,29 +19,36 @@ interface TaskDialogData {
 export class TaskDialogComponent {
   isEditMode = false;
   taskForm: FormGroup;
-  
+
   title = '';
   priority: 'low' | 'medium' | 'high' = 'low';
 
   constructor(
     public dialogRef: MatDialogRef<TaskDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: TaskDialogData,
-    private taskService: TaskService,
     private fb: FormBuilder,
-    private snackBar: MatSnackBar
   ) {
     this.taskForm = this.fb.group({
       title: ['', [Validators.required, Validators.maxLength(100)]],
       startDate: [new Date(), [Validators.required]],
       endDate: [new Date(), [Validators.required]],
-      startTime: ['09:00', [Validators.required]],
-      endTime: ['10:00', [Validators.required]],
+      startTime: [moment(new Date()).format("YYYY-MM-DDT09:00:00"), [Validators.required]],
+      endTime: [moment(new Date()).format("YYYY-MM-DDT10:00:00"), [Validators.required]],
       priority: ['low', [Validators.required]],
     });
+
     this.isEditMode = data.isEdit;
 
-    if (this.isEditMode && data.task)
-      this.taskForm.patchValue(data.task);
+    if (this.isEditMode && data.task){
+      this.taskForm.patchValue({
+        title: data.task.title,
+        startDate: data.task.startDate,
+        endDate: data.task.endDate,
+        startTime: moment(data.task.startDate).format("YYYY-MM-DDTHH:mm:00"),
+        endTime: moment(data.task.endDate).format("YYYY-MM-DDTHH:mm:00"),
+        priority: data.task.priority,
+      });
+    }
   }
 
   onSubmit(): void {
@@ -51,26 +57,23 @@ export class TaskDialogComponent {
 
     const formValue = this.taskForm.value;
 
-    const start = new Date(
-      formValue.startDate.getFullYear(),
-      formValue.startDate.getMonth(),
-      formValue.startDate.getDate(),
-      formValue.startTime.getHours(),
-      formValue.startTime.getMinutes(),
-    );
-    const end = new Date(
-      formValue.endDate.getFullYear(),
-      formValue.endDate.getMonth(),
-      formValue.endDate.getDate(),
-      formValue.endTime.getHours(),
-      formValue.endTime.getMinutes(),
-    );
+    const start = new Date(formValue.startDate);
+    const end = new Date(formValue.endDate);
+    
+    const startTime = new Date(formValue.startTime);
+    const endTime = new Date(formValue.endTime);
+    
+    start.setHours(startTime.getHours());
+    start.setMinutes(startTime.getMinutes());
+    
+    end.setHours(endTime.getHours());
+    end.setMinutes(endTime.getMinutes());
 
     const task: Task = {
       guid: this.isEditMode && this.data.task ? this.data.task.guid : Guid.create().toString(),
       title: formValue.title,
-      startDate: start,
-      endDate: end,
+      startDate: moment(start).format("YYYY-MM-DDTHH:mm:ss"),
+      endDate: moment(end).format("YYYY-MM-DDTHH:mm:ss"),
       priority: formValue.priority,
     };
 

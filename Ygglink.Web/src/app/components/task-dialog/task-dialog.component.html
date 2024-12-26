@@ -1,6 +1,4 @@
-<h2 mat-dialog-title>
-  {{ isEditMode ? 'Edit Task' : 'Add New Task' }}
-</h2>
+<h2 mat-dialog-title>{{ isEditMode ? 'Edit Task' : 'Add New Task' }}</h2>
 
 <div mat-dialog-content>
   <form [formGroup]="taskForm">
@@ -18,13 +16,12 @@
       </mat-select>
     </mat-form-field>
 
-    <mat-form-field appearance="fill" class="full-width">
+    <mat-form-field appearance="fill" style="width:100%">
       <mat-label>Enter a date range</mat-label>
       <mat-date-range-input [rangePicker]="picker">
         <input formControlName="startDate" matStartDate placeholder="Start date">
         <input formControlName="endDate" matEndDate placeholder="End date">
       </mat-date-range-input>
-      <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
       <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
       <mat-date-range-picker #picker></mat-date-range-picker>
     </mat-form-field>
@@ -32,20 +29,16 @@
     <div class="date-time-row">
       <mat-form-field>
         <mat-label>Start Time</mat-label>
-        <input matInput
-          [matTimepicker]="timepicker1"
-          formControlName="startTime">
-        <mat-timepicker #timepicker1/>
-        <mat-timepicker-toggle [for]="timepicker1" matSuffix/>
+        <input matInput [matTimepicker]="timepicker1" formControlName="startTime">
+        <mat-timepicker #timepicker1 />
+        <mat-timepicker-toggle [for]="timepicker1" matSuffix />
       </mat-form-field>
-
+  
       <mat-form-field>
         <mat-label>End Time</mat-label>
-        <input matInput
-          [matTimepicker]="timepicker2"
-          formControlName="endTime">
-        <mat-timepicker #timepicker2/>
-        <mat-timepicker-toggle [for]="timepicker2" matSuffix/>
+        <input matInput [matTimepicker]="timepicker2" formControlName="endTime">
+        <mat-timepicker #timepicker2 />
+        <mat-timepicker-toggle [for]="timepicker2" matSuffix />
       </mat-form-field>
     </div>
   </form>
@@ -54,7 +47,5 @@
 <div mat-dialog-actions align="end">
   <button mat-button *ngIf="isEditMode" (click)="onDelete()">Delete</button>
   <button mat-button (click)="onCancel()">Cancel</button>
-  <button mat-button color="primary" (click)="onSubmit()">
-    {{ isEditMode ? 'Save' : 'Add' }}
-  </button>
+  <button mat-button color="primary" (click)="onSubmit()">{{ isEditMode ? 'Save' : 'Add' }}</button>
 </div>

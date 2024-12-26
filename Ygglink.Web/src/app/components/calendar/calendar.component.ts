@@ -156,32 +156,42 @@ export class CalendarComponent implements OnInit {
   previous() {
     switch (this.view) {
       case CalendarView.Month:
-        this.viewDate = addMonths(this.viewDate, -1);
+        this.updateViewDate(addMonths(this.viewDate, -1));
         return;
       case CalendarView.Week:
-        this.viewDate = addWeeks(this.viewDate, -1);
+        this.updateViewDate(addWeeks(this.viewDate, -1));
         return;
       default:
-        this.viewDate = addDays(this.viewDate, -1);
+        this.updateViewDate(addDays(this.viewDate, -1));
         return;
     }
+  }
+
+  updateViewDate(newDate: Date){
+    let reload = false;
+    if(newDate.getMonth() !== this.viewDate.getMonth())
+      reload = true;
+
+    this.viewDate = newDate;
+    if(reload)
+      this.loadTasks();
   }
 
   next() {
     switch (this.view) {
       case CalendarView.Month:
-        this.viewDate = addMonths(this.viewDate, 1);
+        this.updateViewDate(addMonths(this.viewDate, 1));
         return;
       case CalendarView.Week:
-        this.viewDate = addWeeks(this.viewDate, 1);
+        this.updateViewDate(addWeeks(this.viewDate, 1));
         return;
       default:
-        this.viewDate = addDays(this.viewDate, 1);
+        this.updateViewDate(addDays(this.viewDate, 1));
         return;
     }
   }
 
   today() {
-    this.viewDate = new Date();
+    this.updateViewDate(new Date());
   }
 }
