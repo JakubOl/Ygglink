@@ -1,6 +1,4 @@
 <div class="calendar-container">
-
-  <!-- Toolbar for switching between Month/Week/Day -->
   <mat-toolbar color="primary" class="nav-toolbar">
     <button mat-icon-button (click)="setView(CalendarView.Month)">
       <mat-icon>calendar_view_month</mat-icon>
@@ -14,27 +12,22 @@
 
     <span class="spacer"></span>
 
-    <button mat-icon-button (click)="previousDay()">
+    <button mat-icon-button (click)="previous()">
       <mat-icon>chevron_left</mat-icon>
     </button>
     <div class="date-display">
       {{ viewDate | date:(view === CalendarView.Month ? 'MMMM y' : 'fullDate') }}
     </div>
-    <button mat-icon-button (click)="nextDay()">
+    <button mat-icon-button (click)="next()">
       <mat-icon>chevron_right</mat-icon>
     </button>
 
+    <span class="spacer"></span>
+
     <button mat-raised-button (click)="today()">Today</button>
+    <button mat-raised-button color="accent" (click)="addNewTask()" style="margin-left: 10px;">Add Task</button>
   </mat-toolbar>
 
-  <!-- "Add Task" button opens the dialog in create mode -->
-  <div class="add-task-button">
-    <button mat-raised-button color="accent" (click)="addNewTask()">
-      Add Task
-    </button>
-  </div>
-
-  <!-- Calendar Views (Month/Week/Day) -->
   <div class="calendar-views">
     <mwl-calendar-month-view
       *ngIf="view === CalendarView.Month"
@@ -66,5 +59,4 @@
       [draggable]="true">
     </mwl-calendar-day-view>
   </div>
-
 </div>

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { TaskItem } from '../models/task';
+import { Task } from '../models/task';
 import { environment } from '../../environments/environment';
 
 const httpOptions = {
@@ -14,20 +14,22 @@ const httpOptions = {
 export class TaskService {
   constructor(private http: HttpClient) { }
 
-  getTasks(month: string): Observable<TaskItem[]> {
-    let params = new HttpParams().set('month', month);
-    return this.http.get<TaskItem[]>(environment.TASK_API, { params: params, headers: httpOptions.headers });
+  getTasks(month: string): Observable<Task[]> {
+    let params = new HttpParams()
+      .set('month', month);
+
+    return this.http.get<Task[]>(environment.TASK_API, { params: params, headers: httpOptions.headers });
   }
 
-  getTask(id: string): Observable<TaskItem> {
-    return this.http.get<TaskItem>(`${environment.TASK_API}/${id}`, httpOptions);
+  getTask(id: string): Observable<Task> {
+    return this.http.get<Task>(`${environment.TASK_API}/${id}`, httpOptions);
   }
 
-  addTask(task: TaskItem): Observable<TaskItem> {
-    return this.http.post<TaskItem>(environment.TASK_API, task, httpOptions);
+  addTasks(tasks: Task[]): Observable<Task> {
+    return this.http.post<Task>(environment.TASK_API, tasks, httpOptions);
   }
 
-  updateTask(task: TaskItem): Observable<void> {
+  updateTask(task: Task): Observable<void> {
     return this.http.put<void>(environment.TASK_API, task, httpOptions);
   }
 

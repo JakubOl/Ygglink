@@ -2,6 +2,7 @@ import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Task } from '../../models/task';
 import { Guid } from "guid-typescript";
+import { TaskService } from "../../services/task-service.service";
 
 interface TaskDialogData {
   isEdit: boolean;
@@ -39,7 +40,8 @@ export class TaskDialogComponent {
 
   constructor(
     private dialogRef: MatDialogRef<TaskDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: TaskDialogData
+    @Inject(MAT_DIALOG_DATA) public data: TaskDialogData,
+    private taskService: TaskService 
   ) {
     this.isEdit = data.isEdit;
 
@@ -159,5 +161,9 @@ export class TaskDialogComponent {
 
   onCancel() {
     this.dialogRef.close(undefined);
+  }
+
+  onDelete(){
+    this.dialogRef.close(this.editTask?.id);
   }
 }
