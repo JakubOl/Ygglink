@@ -23,6 +23,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
 import { MatChipsModule } from '@angular/material/chips';
 import { DragAndDropModule } from 'angular-draggable-droppable';
+import {MatTimepickerModule} from '@angular/material/timepicker';
 
 // Angular Calendar
 import { CalendarModule, DateAdapter } from 'angular-calendar';
@@ -83,7 +84,7 @@ import { provideNativeDateAdapter } from '@angular/material/core';
     MatDialogModule,
     MatCheckboxModule,
     MatSnackBarModule,
-
+    MatTimepickerModule,
     MatMenuModule,
     MatSelectModule,
     MatChipsModule,

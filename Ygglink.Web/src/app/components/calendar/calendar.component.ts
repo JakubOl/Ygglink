@@ -1,5 +1,5 @@
 import { Component, OnInit, ChangeDetectionStrategy, ViewEncapsulation } from '@angular/core';
-import { CalendarEvent, CalendarView, CalendarEventTimesChangedEvent } from 'angular-calendar';
+import { CalendarEvent, CalendarView } from 'angular-calendar';
 import { Subject } from 'rxjs';
 import { addDays, addMonths, addWeeks } from 'date-fns';
 import { MatDialog } from '@angular/material/dialog';
@@ -31,33 +31,35 @@ export class CalendarComponent implements OnInit {
   { }
 
   ngOnInit(): void {
-    this.loadEvents();
+    this.loadTasks();
   }
 
-  loadEvents(): void {
+  loadTasks(): void{
     const month = moment(this.viewDate).format('YYYY-MM');
 
     this.taskService
       .getTasks(month)
       .subscribe(tasks => {
         this.tasks = tasks;
-        this.events = this.tasks.map((task) => {
-          return {
-            id: task.guid,
-            title: task.title,
-            start: new Date(task.startDate),
-            end: task.endDate ? new Date(task.endDate) : undefined,
-            color: this.getPriorityColor(task.priority),
-            draggable: false,
-            resizable: { beforeStart: true, afterEnd: true },
-            meta: {
-              priority: task.priority
-            }
-          };
-        });
-
-        this.refresh.next(null);
+        this.loadEvents();
       });
+  }
+
+  loadEvents(): void {
+    this.events = this.tasks.map((task) => {
+      return {
+        id: task.guid,
+        title: task.title,
+        start: new Date(task.startDate),
+        end: task.endDate ? new Date(task.endDate) : undefined,
+        color: this.getPriorityColor(task.priority),
+        draggable: false,
+        resizable: { beforeStart: true, afterEnd: true },
+        meta: {
+          priority: task.priority
+        }
+      };
+    });
 
     this.refresh.next(null);
   }
@@ -78,27 +80,24 @@ export class CalendarComponent implements OnInit {
           return;
 
         if(updatedTask == "Deleted"){
-          this.loadEvents();
+          this.taskService.deleteTask(task.guid).subscribe({
+            next: () => {
+              this.tasks = this.tasks.filter(t => t.guid !== task.guid);
+              this.loadEvents();
+              this.snackBar.open(`Task deleted.`, 'Close', { duration: 3000 });
+            },
+            error: () => {
+              this.snackBar.open(`Failed to delete task. Please try again.`, 'Close', { duration: 3000 });
+            }
+          });
+          
           return;
         }
 
         if (updatedTask) {
-          this.applyTaskChanges(updatedTask[0]);
+          this.applyTaskChanges(updatedTask);
         }
       });
-  }
-
-  eventTimesChanged({
-    event,
-    newStart,
-    newEnd
-  }: CalendarEventTimesChangedEvent): void {
-    const foundIndex = this.tasks.findIndex((t) => t.guid === event.id);
-    if (foundIndex !== -1) {
-      this.tasks[foundIndex].startDate = newStart;
-      this.tasks[foundIndex].endDate = newEnd || undefined;
-      this.loadEvents();
-    }
   }
 
   addNewTask() {
@@ -108,17 +107,20 @@ export class CalendarComponent implements OnInit {
         data: { isEdit: false }
       })
       .afterClosed()
-      .subscribe((newTasks: Task[] | undefined) => {
-        if (!newTasks?.length)
+      .subscribe((newTask: any) => {
+        if(newTask == "Closed")
           return;
 
-        this.taskService.addTasks(newTasks).subscribe({
+        if (!newTask)
+          return;
+
+        this.taskService.addTask(newTask).subscribe({
           next: () => {
-            this.loadEvents();
+            this.loadTasks();
             this.snackBar.open(`Task added.`, 'Close', { duration: 3000 });
           },
           error: () => {
-            this.snackBar.open(`Failed to add tasks. Please try again.`, 'Close', { duration: 3000 });
+            this.snackBar.open(`Failed to add task. Please try again.`, 'Close', { duration: 3000 });
           }
         });
       });
@@ -127,11 +129,11 @@ export class CalendarComponent implements OnInit {
   applyTaskChanges(updated: Task) {
     this.taskService.updateTask(updated).subscribe({
       next: () => {
-        this.loadEvents();
+        this.loadTasks();
         this.snackBar.open(`Task updated.`, 'Close', { duration: 3000 });
       },
       error: () => {
-        this.snackBar.open(`Failed to edit tasks. Please try again.`, 'Close', { duration: 3000 });
+        this.snackBar.open(`Failed to edit task. Please try again.`, 'Close', { duration: 3000 });
       }
     });
   }

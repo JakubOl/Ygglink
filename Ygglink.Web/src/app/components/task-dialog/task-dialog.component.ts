@@ -4,6 +4,7 @@ import { Task } from '../../models/task';
 import { Guid } from "guid-typescript";
 import { TaskService } from "../../services/task-service.service";
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 interface TaskDialogData {
   isEdit: boolean;
@@ -17,148 +18,63 @@ interface TaskDialogData {
   standalone: false
 })
 export class TaskDialogComponent {
-  isEdit = false;
-  editTask?: Task;
-
+  isEditMode = false;
+  taskForm: FormGroup;
+  
   title = '';
   priority: 'low' | 'medium' | 'high' = 'low';
 
-  startDate: Date = new Date();
-  startTime: string = '09:00';
-
-  endDate: Date = new Date();
-  endTime: string = '10:00';
-
-  weekdays = [
-    { label: 'Sun', day: 0, selected: true },
-    { label: 'Mon', day: 1, selected: true },
-    { label: 'Tue', day: 2, selected: true },
-    { label: 'Wed', day: 3, selected: true },
-    { label: 'Thu', day: 4, selected: true },
-    { label: 'Fri', day: 5, selected: true },
-    { label: 'Sat', day: 6, selected: true }
-  ];
-
   constructor(
-    private dialogRef: MatDialogRef<TaskDialogComponent>,
+    public dialogRef: MatDialogRef<TaskDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: TaskDialogData,
     private taskService: TaskService,
+    private fb: FormBuilder,
     private snackBar: MatSnackBar
   ) {
-    this.isEdit = data.isEdit;
+    this.taskForm = this.fb.group({
+      title: ['', [Validators.required, Validators.maxLength(100)]],
+      startDate: [new Date(), [Validators.required]],
+      endDate: [new Date(), [Validators.required]],
+      startTime: ['09:00', [Validators.required]],
+      endTime: ['10:00', [Validators.required]],
+      priority: ['low', [Validators.required]],
+    });
+    this.isEditMode = data.isEdit;
 
-    if (this.isEdit && data.task) {
-      this.editTask = { ...data.task };
-    } else {
-      this.startDate = new Date();
-      this.endDate = new Date();
-    }
+    if (this.isEditMode && data.task)
+      this.taskForm.patchValue(data.task);
   }
 
-  onSubmit() {
-    if (this.isEdit && this.editTask) {
-      this.dialogRef.close([this.editTask]);
+  onSubmit(): void {
+    if (!this.taskForm.valid)
       return;
-    }
 
-    const tasksToCreate: Task[] = [];
+    const formValue = this.taskForm.value;
 
-    const [startHour, startMin] = this.startTime.split(':').map(Number);
-    const [endHour, endMin] = this.endTime.split(':').map(Number);
+    const start = new Date(
+      formValue.startDate.getFullYear(),
+      formValue.startDate.getMonth(),
+      formValue.startDate.getDate(),
+      formValue.startTime.getHours(),
+      formValue.startTime.getMinutes(),
+    );
+    const end = new Date(
+      formValue.endDate.getFullYear(),
+      formValue.endDate.getMonth(),
+      formValue.endDate.getDate(),
+      formValue.endTime.getHours(),
+      formValue.endTime.getMinutes(),
+    );
 
-    const fromDate = new Date(this.startDate);
-    const toDate = new Date(this.endDate);
+    const task: Task = {
+      guid: this.isEditMode && this.data.task ? this.data.task.guid : Guid.create().toString(),
+      title: formValue.title,
+      startDate: start,
+      endDate: end,
+      priority: formValue.priority,
+    };
 
-    if (fromDate > toDate) {
-      alert('Start date must be before end date.');
-      return;
-    }
-
-    let currentDate = new Date(fromDate.getTime());
-
-    while (currentDate <= toDate) {
-      const dayOfWeek = currentDate.getDay();
-      const isSelectedDay = this.weekdays.find(
-        (w) => w.day === dayOfWeek && w.selected
-      );
-      if (isSelectedDay) {
-        const start = new Date(
-          currentDate.getFullYear(),
-          currentDate.getMonth(),
-          currentDate.getDate(),
-          startHour,
-          startMin
-        );
-        const end = new Date(
-          currentDate.getFullYear(),
-          currentDate.getMonth(),
-          currentDate.getDate(),
-          endHour,
-          endMin
-        );
-
-        const newTask: Task = {
-          guid: Guid.create().toString(),
-          title: this.title,
-          startDate: start,
-          endDate: end,
-          priority: this.priority
-        };
-        tasksToCreate.push(newTask);
-      }
-
-      currentDate.setDate(currentDate.getDate() + 1);
-    }
-
-    if (!tasksToCreate.length) {
-      const start = new Date(
-        fromDate.getFullYear(),
-        fromDate.getMonth(),
-        fromDate.getDate(),
-        startHour,
-        startMin
-      );
-      const end = new Date(
-        fromDate.getFullYear(),
-        fromDate.getMonth(),
-        fromDate.getDate(),
-        endHour,
-        endMin
-      );
-      tasksToCreate.push({
-        guid: Guid.create().toString(),
-        title: this.title,
-        startDate: start,
-        endDate: end,
-        priority: this.priority
-      });
-    }
-
-    this.dialogRef.close(tasksToCreate);
-  }
-
-  onEditStartTimeChange(event: Event) {
-    const input = event.target as HTMLInputElement;
-    const value = input.value;
-    if (!this.editTask) return;
-  
-    const [hours, minutes] = value.split(':').map(Number);
-    const tempDate = new Date(this.editTask.startDate);
-    tempDate.setHours(hours || 0);
-    tempDate.setMinutes(minutes || 0);
-    this.editTask.startDate = tempDate;
-  }
-  
-  onEditEndTimeChange(event: Event) {
-    const input = event.target as HTMLInputElement;
-    const value = input.value;
-    if (!this.editTask) return;
-  
-    const [hours, minutes] = value.split(':').map(Number);
-    const tempDate = new Date(this.editTask.endDate || this.editTask.startDate);
-    tempDate.setHours(hours || 0);
-    tempDate.setMinutes(minutes || 0);
-    this.editTask.endDate = tempDate;
+    this.dialogRef.close(task);
   }
 
   onCancel() {
@@ -166,21 +82,6 @@ export class TaskDialogComponent {
   }
 
   onDelete(){
-    if(this.editTask?.guid)
-    {
-      this.taskService.deleteTask(this.editTask?.guid!).subscribe({
-        next: () => {
-          this.snackBar.open(`Task deleted.`, 'Close', { duration: 3000 });
-          this.dialogRef.close("Deleted");
-        },
-        error: () => {
-          this.snackBar.open(`Failed to delete tasks. Please try again.`, 'Close', { duration: 3000 });
-        }
-      });
-
-      return;
-    }
-      
-    this.dialogRef.close("Closed");
+    this.dialogRef.close("Deleted");
   }
 }

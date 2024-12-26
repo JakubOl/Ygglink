@@ -14,30 +14,24 @@ public class CreateTasksEnpoint : IEndpoint
         app.MapPost("task", 
                 async (TaskDbContext context, 
                 ClaimsPrincipal user, 
-                TaskItemDto[] taskDtos,
+                TaskItemDto taskDto,
                 IValidator<TaskItemDto> validator) =>
                 {
                     var userId = user.GetUserGuid();
                     if (userId == Guid.Empty)
                         return Results.Unauthorized();
 
-                    var tasksToAdd = new List<TaskItem>();
-                    foreach (var taskDto in taskDtos)
-                    {
-                        var validationResult = validator.Validate(taskDto);
-                        if (!validationResult.IsValid)
-                            return Results.BadRequest(validationResult.Errors.Select(e => e.ErrorMessage));
+                    var validationResult = validator.Validate(taskDto);
+                    if (!validationResult.IsValid)
+                        return Results.BadRequest(validationResult.Errors.Select(e => e.ErrorMessage));
 
-                        var taskEntity = taskDto.MapToEntity();
-                        taskEntity.UserId = userId;
+                    var task = taskDto.MapToEntity();
+                    task.UserId = userId;
 
-                        tasksToAdd.Add(taskEntity);
-                    }
-
-                    context.Tasks.AddRange(tasksToAdd);
+                    context.Tasks.Add(task);
                     await context.SaveChangesAsync();
 
-                    return Results.Created($"/tasks", taskDtos);
+                    return Results.Created($"/tasks/{task.Guid}", task);
                 })
             .Accepts<TaskItemDto>("application/json")
             .Produces(StatusCodes.Status201Created)

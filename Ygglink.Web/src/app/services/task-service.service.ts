@@ -25,9 +25,8 @@ export class TaskService {
     return this.http.get<Task>(`${environment.TASK_API}/${id}`, httpOptions);
   }
 
-  addTasks(tasks: Task[]): Observable<Task> {
-    console.log(tasks);
-    return this.http.post<Task>(environment.TASK_API, tasks, httpOptions);
+  addTask(task: Task): Observable<Task> {
+    return this.http.post<Task>(environment.TASK_API, task, httpOptions);
   }
 
   updateTask(task: Task): Observable<void> {

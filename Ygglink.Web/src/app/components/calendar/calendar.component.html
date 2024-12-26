@@ -34,9 +34,8 @@
       [viewDate]="viewDate"
       [events]="events"
       [refresh]="refresh"
-      (eventTimesChanged)="eventTimesChanged($event)"
       (eventClicked)="eventClicked($event.event)"
-      [draggable]="true">
+      [draggable]="false">
     </mwl-calendar-month-view>
 
     <mwl-calendar-week-view
@@ -44,9 +43,8 @@
       [viewDate]="viewDate"
       [events]="events"
       [refresh]="refresh"
-      (eventTimesChanged)="eventTimesChanged($event)"
       (eventClicked)="eventClicked($event.event)"
-      [draggable]="true">
+      [draggable]="false">
     </mwl-calendar-week-view>
 
     <mwl-calendar-day-view
@@ -54,9 +52,8 @@
       [viewDate]="viewDate"
       [events]="events"
       [refresh]="refresh"
-      (eventTimesChanged)="eventTimesChanged($event)"
       (eventClicked)="eventClicked($event.event)"
-      [draggable]="true">
+      [draggable]="false">
     </mwl-calendar-day-view>
   </div>
 </div>
