@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { StockService, UserSubscription } from '../../services/stock.service';
 import { Subscription, interval } from 'rxjs';
 import { StockData } from '../../models/stock-data';
+import { addDays } from 'date-fns';
 
 @Component({
   selector: 'app-stock-dashboard',
@@ -45,26 +46,29 @@ export class StockDashboardComponent implements OnInit, OnDestroy {
   }
 
   fetchUserSubscription(): void {
-    this.isLoading = true;
-    this.stockService.getSubscriptionByUserId(this.userId).subscribe(
-      (subscription: UserSubscription) => {
-        this.userSubscription = subscription;
-        this.allStocks = subscription.subscribedStocks.map(symbol => ({
-          symbol,
-          data: this.generateDummyData()
-        }));
-        this.updateDisplayedStocks();
-        this.isLoading = false;
-      },
-      (error) => {
-        if (error.status === 404) {
-          this.createUserSubscription();
-        } else {
-          alert(`Error fetching subscription: ${error}`);
-          this.isLoading = false;
-        }
-      }
-    );
+    // this.isLoading = true;
+    this.userSubscription = {subscribedStocks: [ "A", "B", "C"], userId: "12"};
+    this.allStocks = [ { symbol: "A", data: this.generateDummyData() }, { symbol: "B", data: this.generateDummyData() }, { symbol: "C", data: this.generateDummyData() }];
+          
+    // this.stockService.getSubscriptionByUserId(this.userId).subscribe(
+    //   (subscription: UserSubscription) => {
+    //     this.userSubscription = subscription;
+    //     this.allStocks = subscription.subscribedStocks.map(symbol => ({
+    //       symbol,
+    //       data: this.generateDummyData()
+    //     }));
+    //     this.updateDisplayedStocks();
+    //     this.isLoading = false;
+    //   },
+    //   (error) => {
+    //     if (error.status === 404) {
+    //       this.createUserSubscription();
+    //     } else {
+    //       alert(`Error fetching subscription: ${error}`);
+    //       this.isLoading = false;
+    //     }
+    //   }
+    // );
   }
 
   createUserSubscription(): void {
@@ -193,11 +197,11 @@ export class StockDashboardComponent implements OnInit, OnDestroy {
   generateDummyData(): StockData[] {
     const data: StockData[] = [];
     const startDate = new Date();
-    startDate.setDate(startDate.getDate() - 30);
+    addDays(startDate, -300);
 
-    for (let i = 0; i < 30; i++) {
+    for (let i = 0; i < 300; i++) {
       const date = new Date(startDate);
-      date.setDate(startDate.getDate() + i);
+      addDays(startDate, i);
       const dateString = `${date.getMonth() + 1}/${date.getDate()}`;
 
       const open = this.randomNumber(100, 500);
