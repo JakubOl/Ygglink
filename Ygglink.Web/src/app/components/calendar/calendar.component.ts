@@ -113,7 +113,10 @@ export class CalendarComponent implements OnInit {
           return;
 
         this.taskService.addTasks(newTasks).subscribe({
-          next: () => this.loadEvents(),
+          next: () => {
+            this.loadEvents();
+            this.snackBar.open(`Task added.`, 'Close', { duration: 3000 });
+          },
           error: () => {
             this.snackBar.open(`Failed to add tasks. Please try again.`, 'Close', { duration: 3000 });
           }
@@ -123,7 +126,10 @@ export class CalendarComponent implements OnInit {
 
   applyTaskChanges(updated: Task) {
     this.taskService.updateTask(updated).subscribe({
-      next: () => this.loadEvents(),
+      next: () => {
+        this.loadEvents();
+        this.snackBar.open(`Task updated.`, 'Close', { duration: 3000 });
+      },
       error: () => {
         this.snackBar.open(`Failed to edit tasks. Please try again.`, 'Close', { duration: 3000 });
       }
