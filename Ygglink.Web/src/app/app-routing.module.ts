@@ -6,13 +6,14 @@ import { NgModule } from '@angular/core';
 import { HomeComponent } from './components/home/home.component';
 import { CalendarComponent } from './components/calendar/calendar.component';
 import { AuthGuard } from './guards/auth.guard';
+import { StockDashboardComponent } from './components/stock-dashboard/stock-dashboard.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
-  // { path: 'profile', component: ProfileComponent, canActivate: [AuthGuard] },
   { path: 'email-verify', component: EmailVerificationComponent },
   { path: 'calendar', component: CalendarComponent, canActivate: [AuthGuard] },
+  { path: 'stocks', component: StockDashboardComponent, canActivate: [AuthGuard] },
   { path: '**', component: HomeComponent, canActivate: [AuthGuard] },
 ];
 

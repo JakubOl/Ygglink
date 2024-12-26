@@ -23,7 +23,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
 import { MatChipsModule } from '@angular/material/chips';
 import { DragAndDropModule } from 'angular-draggable-droppable';
-import {MatTimepickerModule} from '@angular/material/timepicker';
+import { MatTimepickerModule } from '@angular/material/timepicker';
 
 // Angular Calendar
 import { CalendarModule, DateAdapter } from 'angular-calendar';
@@ -46,6 +46,10 @@ import { HomeComponent } from './components/home/home.component';
 import { TaskDialogComponent } from './components/task-dialog/task-dialog.component';
 import { httpInterceptorProviders } from './interceptors/http.interceptor';
 import { provideNativeDateAdapter } from '@angular/material/core';
+import { NgxEchartsModule } from 'ngx-echarts';
+import { StockDashboardComponent } from './components/stock-dashboard/stock-dashboard.component';
+import { StockChartComponent } from './components/stock-chart/stock-chart.component';
+import * as echarts from 'echarts';
 
 @NgModule({
   declarations: [
@@ -59,6 +63,8 @@ import { provideNativeDateAdapter } from '@angular/material/core';
     HomeComponent,
     CalendarComponent,
     TaskDialogComponent,
+    StockDashboardComponent,
+    StockChartComponent
   ],
   imports: [
     BrowserModule,
@@ -89,9 +95,14 @@ import { provideNativeDateAdapter } from '@angular/material/core';
     MatSelectModule,
     MatChipsModule,
     DragAndDropModule,
+    
     CalendarModule.forRoot({
       provide: DateAdapter,
       useFactory: adapterFactory
+    }),
+
+    NgxEchartsModule.forRoot({
+      echarts
     }),
 
     LayoutModule,

@@ -1,0 +1,45 @@
+<mat-toolbar color="primary">
+    <span>Stock Dashboard</span>
+</mat-toolbar>
+
+<div class="container">
+    <form [formGroup]="stockForm" (ngSubmit)="onSubmit()" class="stock-form">
+        <mat-form-field appearance="outline">
+            <mat-label>Stock Symbol</mat-label>
+            <input matInput placeholder="e.g., AAPL" formControlName="symbol">
+        </mat-form-field>
+        <button mat-raised-button color="primary" type="submit" [disabled]="!stockForm.valid">
+            Add Stock
+        </button>
+    </form>
+
+    <div class="navigation-buttons" *ngIf="allStocks.length > pageSize">
+        <button mat-icon-button color="accent" (click)="previousPage()">
+            <mat-icon>arrow_back</mat-icon>
+        </button>
+        <button mat-icon-button color="accent" (click)="nextPage()">
+            <mat-icon>arrow_forward</mat-icon>
+        </button>
+    </div>
+
+    <div class="page-indicators" *ngIf="totalPages > 1">
+        <span *ngFor="let page of pages; let i = index" class="page-dot" [class.active]="i === currentPage"
+            (click)="goToPage(i)">
+        </span>
+    </div>
+
+    <div *ngIf="isLoading" class="loading-spinner">
+        <mat-spinner></mat-spinner>
+    </div>
+
+    <mat-grid-list [cols]="gridCols" rowHeight="400px" gutterSize="16px">
+        <mat-grid-tile *ngFor="let stock of displayedStocks">
+            <div class="chart-container">
+                <app-stock-chart [stockSymbol]="stock.symbol" [data]="stock.data"></app-stock-chart>
+                <button mat-icon-button color="warn" class="remove-button" (click)="removeStock(stock.symbol)">
+                    <mat-icon>close</mat-icon>
+                </button>
+            </div>
+        </mat-grid-tile>
+    </mat-grid-list>
+</div>

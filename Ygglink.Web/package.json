@@ -23,9 +23,11 @@
     "angular-calendar": "^0.31.1",
     "angular-draggable-droppable": "^8.0.0",
     "date-fns": "^4.1.0",
+    "echarts": "^5.5.1",
     "guid-typescript": "^1.0.9",
     "jwt-decode": "^4.0.0",
     "moment": "^2.30.1",
+    "ngx-echarts": "^19.0.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.15.0"

@@ -1,0 +1,65 @@
+.container {
+    padding: 16px;
+}
+
+.stock-form {
+    display: flex;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.stock-form mat-form-field {
+    flex: 1;
+    margin-right: 16px;
+}
+
+.navigation-buttons {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 16px;
+}
+
+.navigation-buttons button {
+    margin-left: 8px;
+}
+
+.page-indicators {
+    display: flex;
+    justify-content: center;
+    margin: 8px 0;
+}
+
+.page-dot {
+    height: 12px;
+    width: 12px;
+    margin: 0 4px;
+    background-color: #bbb;
+    border-radius: 50%;
+    display: inline-block;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.page-dot.active {
+    background-color: #3f51b5;
+}
+
+.chart-container {
+    position: relative;
+    height: 100%;
+}
+
+.remove-button {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 50%;
+}
+
+.loading-spinner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 16px;
+}
