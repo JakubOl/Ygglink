@@ -3,8 +3,8 @@ using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Ygglink.ServiceDefaults.Extensions;
 using Ygglink.ServiceDefaults.Models.Abstract;
-using Ygglink.TaskApi.Dtos;
 using Ygglink.TaskApi.Infrastructure;
+using Ygglink.TaskApi.Models;
 
 namespace Ygglink.TaskApi.Enpoints;
 
@@ -27,17 +27,14 @@ public class UpdateTaskEndpoint : IEndpoint
                         return Results.BadRequest(validationResult.Errors.Select(e => e.ErrorMessage));
 
                     var task = await context.Tasks
-                       .Include(t => t.Subtasks)
                        .FirstOrDefaultAsync(t => t.UserId == userId && t.Guid == taskDto.Guid);
 
                     if (task == null)
                         return Results.NotFound(new { message = "Task does not exist!" });
 
                     task.Title = taskDto.Title;
-                    task.Description = taskDto.Description;
                     task.StartDate = taskDto.StartDate;
                     task.EndDate = taskDto.EndDate;
-                    task.Subtasks = taskDto.Subtasks.Select(x => x.MapToEntity()).ToList();
 
                     await context.SaveChangesAsync();
 

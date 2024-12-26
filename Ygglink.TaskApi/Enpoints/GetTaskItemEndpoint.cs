@@ -11,24 +11,23 @@ public class GetTaskItemEndpoint : IEndpoint
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapGet("task/{taskGuid}",
-            async (Guid taskGuid,
-            ILogger<GetTasksEndpoint> logger,
-            TaskDbContext context,
-            ClaimsPrincipal user) =>
-            {
-                var userId = user.GetUserGuid();
-                if (userId == Guid.Empty)
-                    return Results.Problem(statusCode: 401);
+                async (Guid taskGuid,
+                ILogger<GetTasksEndpoint> logger,
+                TaskDbContext context,
+                ClaimsPrincipal user) =>
+                {
+                    var userId = user.GetUserGuid();
+                    if (userId == Guid.Empty)
+                        return Results.Problem(statusCode: 401);
 
-                var task = await context.Tasks
-                    .Include(t => t.Subtasks)
-                    .FirstOrDefaultAsync(t => t.UserId == userId && t.Guid == taskGuid);
+                    var task = await context.Tasks
+                        .FirstOrDefaultAsync(t => t.UserId == userId && t.Guid == taskGuid);
 
-                if (task == null)
-                    return Results.NotFound(new { message = "Task does not exist!" });
+                    if (task == null)
+                        return Results.NotFound(new { message = "Task does not exist!" });
 
-                return Results.Ok(task.MapToDto());
-            })
+                    return Results.Ok(task.MapToDto());
+                })
             .Produces(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status400BadRequest)
             .Produces(StatusCodes.Status401Unauthorized)

@@ -13,10 +13,10 @@ public class GetTasksEndpoint : IEndpoint
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapGet("task",
-            async ([FromQuery] string month,
-            ILogger<GetTasksEndpoint> logger,
-            TaskDbContext context,
-            ClaimsPrincipal user) =>
+                async ([FromQuery] string month,
+                ILogger<GetTasksEndpoint> logger,
+                TaskDbContext context,
+                ClaimsPrincipal user) =>
                 {
                     var userId = user.GetUserGuid();
                     if (userId == Guid.Empty)
@@ -29,7 +29,6 @@ public class GetTasksEndpoint : IEndpoint
                     var end = start.AddMonths(1);
 
                     var tasks = await context.Tasks
-                        .Include(t => t.Subtasks)
                         .Where(t => t.UserId == userId && t.StartDate <= end && t.EndDate >= start)
                         .Select(x => x.MapToDto())
                         .AsNoTracking()

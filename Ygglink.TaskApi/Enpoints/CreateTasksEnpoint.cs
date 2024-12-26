@@ -2,36 +2,42 @@
 using FluentValidation;
 using Ygglink.ServiceDefaults.Extensions;
 using Ygglink.ServiceDefaults.Models.Abstract;
-using Ygglink.TaskApi.Dtos;
 using Ygglink.TaskApi.Infrastructure;
+using Ygglink.TaskApi.Models;
 
 namespace Ygglink.TaskApi.Enpoints;
 
-public class CreateTaskEnpoint : IEndpoint
+public class CreateTasksEnpoint : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapPost("task", 
                 async (TaskDbContext context, 
                 ClaimsPrincipal user, 
-                TaskItemDto taskDto,
+                TaskItemDto[] taskDtos,
                 IValidator<TaskItemDto> validator) =>
                 {
                     var userId = user.GetUserGuid();
                     if (userId == Guid.Empty)
                         return Results.Unauthorized();
 
-                    var validationResult = validator.Validate(taskDto);
-                    if (!validationResult.IsValid)
-                        return Results.BadRequest(validationResult.Errors.Select(e => e.ErrorMessage));
+                    var tasksToAdd = new List<TaskItem>();
+                    foreach (var taskDto in taskDtos)
+                    {
+                        var validationResult = validator.Validate(taskDto);
+                        if (!validationResult.IsValid)
+                            return Results.BadRequest(validationResult.Errors.Select(e => e.ErrorMessage));
 
-                    var task = taskDto.MapToEntity();
-                    task.UserId = userId;
+                        var taskEntity = taskDto.MapToEntity();
+                        taskEntity.UserId = userId;
 
-                    context.Tasks.Add(task);
+                        tasksToAdd.Add(taskEntity);
+                    }
+
+                    context.Tasks.AddRange(tasksToAdd);
                     await context.SaveChangesAsync();
 
-                    return Results.Created($"/tasks/{task.Id}", task);
+                    return Results.Created($"/tasks", taskDtos);
                 })
             .Accepts<TaskItemDto>("application/json")
             .Produces(StatusCodes.Status201Created)
