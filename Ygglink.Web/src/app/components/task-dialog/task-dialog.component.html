@@ -21,28 +21,28 @@
     <div class="date-time-row">
       <mat-form-field appearance="fill">
         <mat-label>Start Date</mat-label>
-        <input matInput [matDatepicker]="dp1" [(ngModel)]="editTask.start" />
+        <input matInput [matDatepicker]="dp1" [(ngModel)]="editTask.startDate" />
         <mat-datepicker-toggle matSuffix [for]="dp1"></mat-datepicker-toggle>
         <mat-datepicker #dp1></mat-datepicker>
       </mat-form-field>
 
       <mat-form-field appearance="fill">
         <mat-label>Start Time</mat-label>
-        <input matInput [value]="(editTask.start | date:'HH:mm')" (input)="onEditStartTimeChange($event)" />
+        <input matInput [value]="(editTask.startDate | date:'HH:mm')" (input)="onEditStartTimeChange($event)" />
       </mat-form-field>
     </div>
 
     <div class="date-time-row">
       <mat-form-field appearance="fill">
         <mat-label>End Date</mat-label>
-        <input matInput [matDatepicker]="dp2" [(ngModel)]="editTask.end" />
+        <input matInput [matDatepicker]="dp2" [(ngModel)]="editTask.endDate" />
         <mat-datepicker-toggle matSuffix [for]="dp2"></mat-datepicker-toggle>
         <mat-datepicker #dp2></mat-datepicker>
       </mat-form-field>
 
       <mat-form-field appearance="fill">
         <mat-label>End Time</mat-label>
-        <input matInput [value]="(editTask.end || editTask.start | date:'HH:mm')"
+        <input matInput [value]="(editTask.endDate || editTask.startDate | date:'HH:mm')"
           (input)="onEditEndTimeChange($event)" />
       </mat-form-field>
     </div>

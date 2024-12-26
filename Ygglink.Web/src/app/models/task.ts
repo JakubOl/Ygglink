@@ -1,7 +1,7 @@
 export interface Task {
-    id: string;
+    guid: string;
     title: string;
-    start: Date;
-    end?: Date;
+    startDate: Date;
+    endDate?: Date;
     priority: 'low' | 'medium' | 'high';
 }

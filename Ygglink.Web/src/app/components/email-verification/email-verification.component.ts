@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-email-verification',
@@ -18,7 +19,8 @@ export class EmailVerificationComponent implements OnInit {
     private route: ActivatedRoute,
     private http: HttpClient,
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
+     private snackBar: MatSnackBar
   ) {}
 
   ngOnInit() {
@@ -37,14 +39,10 @@ export class EmailVerificationComponent implements OnInit {
   verifyEmail(userId: string, token: string) {
     this.authService
       .verifyEmail(userId, token)
-      .subscribe(
-        (response) => {
-          this.message = 'Your email has been successfully verified!';
-        },
-        (error) => {
-          this.error = error.error || 'Email verification failed. The link may be invalid or expired.';
-        }
-      );
+      .subscribe({
+        next: () => this.snackBar.open(`Your email has been successfully verified!`, 'Close', { duration: 3000 }),
+        error: (error) => this.snackBar.open(error.error || 'Email verification failed. The link may be invalid or expired.', 'Close', { duration: 3000 })
+      });
   }
 
   navigateToLogin() {

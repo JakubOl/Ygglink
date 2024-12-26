@@ -16,5 +16,8 @@ public class TaskItemDtoValidator : AbstractValidator<TaskItemDto>
 
         RuleFor(x => x.EndDate)
             .NotNull().WithMessage("End date is required.");
+
+        RuleFor(x => x.Priority)
+            .NotNull().WithMessage("Priority is required.");
     }
 }

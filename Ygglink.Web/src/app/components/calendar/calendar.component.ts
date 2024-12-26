@@ -5,7 +5,6 @@ import { addDays, addMonths, addWeeks } from 'date-fns';
 import { MatDialog } from '@angular/material/dialog';
 import { TaskDialogComponent } from '../task-dialog/task-dialog.component';
 import { Task } from '../../models/task';
-import { Guid } from 'guid-typescript';
 import { TaskService } from '../../services/task-service.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import moment from 'moment';
@@ -23,27 +22,13 @@ export class CalendarComponent implements OnInit {
   CalendarView = CalendarView;
   viewDate: Date = new Date();
   refresh: Subject<any> = new Subject<any>();
-
-  tasks: Task[] = [
-    {
-      id: Guid.create().toString(),
-      title: 'Project Meeting',
-      start: new Date(2024, 11, 12, 9, 0),
-      end: new Date(2024, 11, 12, 10, 0),
-      priority: 'high'
-    },
-    {
-      id: Guid.create().toString(),
-      title: 'Buy Groceries',
-      start: new Date(2024, 11, 12, 17, 0),
-      end: new Date(2024, 11, 12, 18, 0),
-      priority: 'medium'
-    }
-  ];
-
+  tasks: Task[] = [];
   events: CalendarEvent[] = [];
 
-  constructor(private dialog: MatDialog, private taskService: TaskService, private snackBar: MatSnackBar) { }
+  constructor(private dialog: MatDialog, 
+    private taskService: TaskService, 
+    private snackBar: MatSnackBar) 
+  { }
 
   ngOnInit(): void {
     this.loadEvents();
@@ -52,27 +37,33 @@ export class CalendarComponent implements OnInit {
   loadEvents(): void {
     const month = moment(this.viewDate).format('YYYY-MM');
 
-    this.taskService.getTasks(month).subscribe(tasks => {
-      this.events = tasks.map((task) => {
-        return {
-          id: task.id,
-          title: task.title,
-          start: new Date(task.start),
-          end: task.end ? new Date(task.end) : undefined,
-          color: this.getPriorityColor(task.priority),
-          draggable: false,
-          resizable: { beforeStart: true, afterEnd: true },
-          meta: {
-            priority: task.priority
-          }
-        };
+    this.taskService
+      .getTasks(month)
+      .subscribe(tasks => {
+        this.tasks = tasks;
+        this.events = this.tasks.map((task) => {
+          return {
+            id: task.guid,
+            title: task.title,
+            start: new Date(task.startDate),
+            end: task.endDate ? new Date(task.endDate) : undefined,
+            color: this.getPriorityColor(task.priority),
+            draggable: false,
+            resizable: { beforeStart: true, afterEnd: true },
+            meta: {
+              priority: task.priority
+            }
+          };
+        });
+
+        this.refresh.next(null);
       });
-    });
+
     this.refresh.next(null);
   }
 
   eventClicked(event: CalendarEvent) {
-    const task = this.tasks.find((t) => t.id === event.id);
+    const task = this.tasks.find((t) => t.guid === event.id);
     if (!task)
       return;
 
@@ -82,14 +73,19 @@ export class CalendarComponent implements OnInit {
         data: { isEdit: true, task: { ...task } }
       })
       .afterClosed()
-      .subscribe((updatedTask: Task[] | undefined) => {
+      .subscribe((updatedTask: any) => {
+        if(updatedTask == "Closed")
+          return;
+
+        if(updatedTask == "Deleted"){
+          this.loadEvents();
+          return;
+        }
+
         if (updatedTask) {
           this.applyTaskChanges(updatedTask[0]);
         }
       });
-  }
-  removeTask(updatedTask: string) {
-    throw new Error('Method not implemented.');
   }
 
   eventTimesChanged({
@@ -97,10 +93,10 @@ export class CalendarComponent implements OnInit {
     newStart,
     newEnd
   }: CalendarEventTimesChangedEvent): void {
-    const foundIndex = this.tasks.findIndex((t) => t.id === event.id);
+    const foundIndex = this.tasks.findIndex((t) => t.guid === event.id);
     if (foundIndex !== -1) {
-      this.tasks[foundIndex].start = newStart;
-      this.tasks[foundIndex].end = newEnd || undefined;
+      this.tasks[foundIndex].startDate = newStart;
+      this.tasks[foundIndex].endDate = newEnd || undefined;
       this.loadEvents();
     }
   }
@@ -126,11 +122,12 @@ export class CalendarComponent implements OnInit {
   }
 
   applyTaskChanges(updated: Task) {
-    const index = this.tasks.findIndex((t) => t.id === updated.id);
-    if (index !== -1) {
-      this.tasks[index] = updated;
-      this.loadEvents();
-    }
+    this.taskService.updateTask(updated).subscribe({
+      next: () => this.loadEvents(),
+      error: () => {
+        this.snackBar.open(`Failed to edit tasks. Please try again.`, 'Close', { duration: 3000 });
+      }
+    });
   }
 
   getPriorityColor(priority: 'low' | 'medium' | 'high') {

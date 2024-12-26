@@ -26,6 +26,7 @@ export class TaskService {
   }
 
   addTasks(tasks: Task[]): Observable<Task> {
+    console.log(tasks);
     return this.http.post<Task>(environment.TASK_API, tasks, httpOptions);
   }
 

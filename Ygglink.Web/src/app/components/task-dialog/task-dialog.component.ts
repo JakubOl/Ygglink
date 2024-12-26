@@ -3,6 +3,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Task } from '../../models/task';
 import { Guid } from "guid-typescript";
 import { TaskService } from "../../services/task-service.service";
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 interface TaskDialogData {
   isEdit: boolean;
@@ -41,7 +42,8 @@ export class TaskDialogComponent {
   constructor(
     private dialogRef: MatDialogRef<TaskDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: TaskDialogData,
-    private taskService: TaskService 
+    private taskService: TaskService,
+    private snackBar: MatSnackBar
   ) {
     this.isEdit = data.isEdit;
 
@@ -96,10 +98,10 @@ export class TaskDialogComponent {
         );
 
         const newTask: Task = {
-          id: Guid.create().toString(),
+          guid: Guid.create().toString(),
           title: this.title,
-          start,
-          end,
+          startDate: start,
+          endDate: end,
           priority: this.priority
         };
         tasksToCreate.push(newTask);
@@ -124,10 +126,10 @@ export class TaskDialogComponent {
         endMin
       );
       tasksToCreate.push({
-        id: Guid.create().toString(),
+        guid: Guid.create().toString(),
         title: this.title,
-        start,
-        end,
+        startDate: start,
+        endDate: end,
         priority: this.priority
       });
     }
@@ -141,10 +143,10 @@ export class TaskDialogComponent {
     if (!this.editTask) return;
   
     const [hours, minutes] = value.split(':').map(Number);
-    const tempDate = new Date(this.editTask.start);
+    const tempDate = new Date(this.editTask.startDate);
     tempDate.setHours(hours || 0);
     tempDate.setMinutes(minutes || 0);
-    this.editTask.start = tempDate;
+    this.editTask.startDate = tempDate;
   }
   
   onEditEndTimeChange(event: Event) {
@@ -153,17 +155,32 @@ export class TaskDialogComponent {
     if (!this.editTask) return;
   
     const [hours, minutes] = value.split(':').map(Number);
-    const tempDate = new Date(this.editTask.end || this.editTask.start);
+    const tempDate = new Date(this.editTask.endDate || this.editTask.startDate);
     tempDate.setHours(hours || 0);
     tempDate.setMinutes(minutes || 0);
-    this.editTask.end = tempDate;
+    this.editTask.endDate = tempDate;
   }
 
   onCancel() {
-    this.dialogRef.close(undefined);
+    this.dialogRef.close("Closed");
   }
 
   onDelete(){
-    this.dialogRef.close(this.editTask?.id);
+    if(this.editTask?.guid)
+    {
+      this.taskService.deleteTask(this.editTask?.guid!).subscribe({
+        next: () => {
+          this.snackBar.open(`Task deleted.`, 'Close', { duration: 3000 });
+          this.dialogRef.close("Deleted");
+        },
+        error: () => {
+          this.snackBar.open(`Failed to delete tasks. Please try again.`, 'Close', { duration: 3000 });
+        }
+      });
+
+      return;
+    }
+      
+    this.dialogRef.close("Closed");
   }
 }

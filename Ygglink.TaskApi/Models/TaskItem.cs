@@ -13,6 +13,10 @@ public class TaskItem
     [StringLength(100, ErrorMessage = "Title cannot exceed 100 characters.")]
     public string Title { get; set; }
 
+    [Required(ErrorMessage = "Priority is required.")]
+    [StringLength(25, ErrorMessage = "Priority cannot exceed 25 characters.")]
+    public string Priority { get; set; }
+
     [Required(ErrorMessage = "Start date is required.")]
     public DateTime StartDate { get; set; }
 
@@ -29,6 +33,7 @@ public class TaskItem
             StartDate = StartDate,
             EndDate = EndDate,
             Title = Title,
+            Priority = Priority,
         };
     }
 }
