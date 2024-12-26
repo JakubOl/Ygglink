@@ -16,6 +16,7 @@ public class TaskItemDto
             StartDate = StartDate,
             EndDate = EndDate,
             Title = Title,
+            Priority = Priority,
         };
     }
 }
