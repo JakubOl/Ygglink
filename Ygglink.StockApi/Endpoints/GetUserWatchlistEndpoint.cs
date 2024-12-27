@@ -9,10 +9,9 @@ public class GetUserWatchlistEndpoint : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapGet("userwatchlist/{userGuid}",
-                async (string userGuid,
-                IUserWatchlistRepository userWatchlistRepository,
-                ClaimsPrincipal user) =>
+        app.MapGet("userwatchlist",
+                async (ClaimsPrincipal user,
+                IUserWatchlistRepository userWatchlistRepository) =>
                 {
                     var userId = user.GetUserGuid();
                     if (userId == Guid.Empty)
@@ -20,7 +19,7 @@ public class GetUserWatchlistEndpoint : IEndpoint
 
                     var userWatchlist = await userWatchlistRepository.GetAsync(userId.ToString());
 
-                    return Results.Ok(userWatchlist);
+                    return Results.Ok(userWatchlist.MapToDto());
                 })
             .Produces(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status401Unauthorized)

@@ -4,7 +4,6 @@ using Ygglink.ServiceDefaults.Models.Abstract;
 using Ygglink.StockApi.Infrastructure;
 using Ygglink.StockApi.Model;
 using Ygglink.ServiceDefaults.Extensions;
-using Microsoft.AspNetCore.Mvc;
 
 namespace Ygglink.StockApi.Endpoints;
 
@@ -13,23 +12,22 @@ public class UpdateUserWatchlistEndpoint : IEndpoint
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapPost("userwatchlist",
-                async (
-                UserWatchlist userWatchlist,
+                async (UserWatchlistDto userWatchlistDto,
                 ClaimsPrincipal user,
-                    [FromServices] IUserWatchlistRepository userWatchlistRepository,
-                IValidator<UserWatchlist> validator) =>
+                IUserWatchlistRepository userWatchlistRepository) =>
                 {
                     var userId = user.GetUserGuid();
                     if (userId == Guid.Empty)
                         return Results.Unauthorized();
 
-                    var validationResult = validator.Validate(userWatchlist);
-                    if (!validationResult.IsValid)
-                        return Results.BadRequest(validationResult.Errors.Select(e => e.ErrorMessage));
-
+                    UserWatchlist userWatchlist = new()
+                    {
+                        UserId = userId.ToString(),
+                        Stocks = userWatchlistDto.Stocks,
+                    };
                     await userWatchlistRepository.UpdateAsync(userWatchlist);
 
-                    return Results.Created($"/userwatchlist/{userWatchlist.UserId}", userWatchlist);
+                    return Results.Created($"/userwatchlist", userWatchlist.MapToDto());
                 })
             .Accepts<UserWatchlist>("application/json")
             .Produces(StatusCodes.Status201Created)

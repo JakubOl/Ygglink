@@ -8,6 +8,17 @@ public class UserWatchlistRepository(IMongoClient client) : IUserWatchlistReposi
     private IMongoCollection<UserWatchlist> userWatchlists => client.GetDatabase("StockDatabase").GetCollection<UserWatchlist>("UserWatchlists");
 
     public async Task<UserWatchlist> GetAsync(string userId) => 
-        await userWatchlists.Find(subscription => subscription.UserId == userId).FirstOrDefaultAsync() ?? new UserWatchlist() { UserId = userId, Stocks = [] };
-    public async Task UpdateAsync(UserWatchlist userWatchlist) => await userWatchlists.ReplaceOneAsync(s => s.UserId == userWatchlist.UserId, userWatchlist);
+        await userWatchlists.Find(userWatchlist => userWatchlist.UserId == userId).FirstOrDefaultAsync() ?? new UserWatchlist() { UserId = userId, Stocks = [] };
+    public async Task UpdateAsync(UserWatchlist userWatchlist)
+    {
+        var dbWatchlist = await userWatchlists.Find(w => w.UserId == userWatchlist.UserId).FirstOrDefaultAsync();
+        if (dbWatchlist != null)
+        {
+            userWatchlist.Id = dbWatchlist.Id;
+            await userWatchlists.ReplaceOneAsync(s => s.UserId == userWatchlist.UserId, userWatchlist);
+            return;
+        }
+
+        await userWatchlists.InsertOneAsync(userWatchlist);
+    }
 }

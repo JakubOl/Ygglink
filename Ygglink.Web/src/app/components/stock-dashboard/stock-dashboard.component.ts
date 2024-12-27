@@ -76,19 +76,6 @@ export class StockDashboardComponent implements OnInit, OnDestroy {
       userId: this.userId,
       subscribedStocks: []
     };
-
-    this.stockService.createSubscription(newSubscription).subscribe(
-      (createdSubscription: UserSubscription) => {
-        this.userSubscription = createdSubscription;
-        this.allStocks = [];
-        this.updateDisplayedStocks();
-        this.isLoading = false;
-      },
-      (error) => {
-        alert(`Error creating subscription: ${error}`);
-        this.isLoading = false;
-      }
-    );
   }
 
   addStock(symbol: string): void {
@@ -197,9 +184,9 @@ export class StockDashboardComponent implements OnInit, OnDestroy {
   generateDummyData(): StockData[] {
     const data: StockData[] = [];
     const startDate = new Date();
-    addDays(startDate, -300);
+    addDays(startDate, -30);
 
-    for (let i = 0; i < 300; i++) {
+    for (let i = 0; i < 30; i++) {
       const date = new Date(startDate);
       addDays(startDate, i);
       const dateString = `${date.getMonth() + 1}/${date.getDate()}`;
