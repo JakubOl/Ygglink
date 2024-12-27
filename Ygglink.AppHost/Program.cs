@@ -45,4 +45,14 @@ builder.AddProject<Projects.Ygglink_Worker>("ygglink-worker")
     .WaitFor(workerDb)
     .WithReference(workerDb);
 
+var mongo = builder.AddMongoDB("mongo")
+    .WithDataVolume()
+    .WithLifetime(ContainerLifetime.Persistent);
+
+var mongodb = mongo.AddDatabase("mongodb");
+
+builder.AddProject<Projects.Ygglink_StockApi>("ygglink-stockapi")
+    .WaitFor(mongodb)
+    .WithReference(mongodb);
+
 builder.Build().Run();

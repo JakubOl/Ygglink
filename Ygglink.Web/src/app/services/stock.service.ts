@@ -19,22 +19,8 @@ export class StockService {
 
   constructor(private http: HttpClient) { }
 
-  getSubscriptions(): Observable<UserSubscription[]> {
+  getWatchlist(): Observable<UserSubscription[]> {
     return this.http.get<UserSubscription[]>(`${this.apiUrl}/subscriptions`)
-      .pipe(
-        catchError(this.handleError)
-      );
-  }
-
-  getSubscriptionByUserId(userId: string): Observable<UserSubscription> {
-    return this.http.get<UserSubscription>(`${this.apiUrl}/subscriptions/${userId}`)
-      .pipe(
-        catchError(this.handleError)
-      );
-  }
-
-  createSubscription(subscription: UserSubscription): Observable<UserSubscription> {
-    return this.http.post<UserSubscription>(`${this.apiUrl}/subscriptions`, subscription)
       .pipe(
         catchError(this.handleError)
       );
@@ -47,29 +33,8 @@ export class StockService {
       );
   }
 
-  deleteSubscription(userId: string): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/subscriptions/${userId}`)
-      .pipe(
-        catchError(this.handleError)
-      );
-  }
-
   getStocks(): Observable<Stock[]> {
     return this.http.get<Stock[]>(`${this.apiUrl}/stocks`)
-      .pipe(
-        catchError(this.handleError)
-      );
-  }
-
-  addStock(stock: Stock): Observable<Stock> {
-    return this.http.post<Stock>(`${this.apiUrl}/stocks`, stock)
-      .pipe(
-        catchError(this.handleError)
-      );
-  }
-
-  removeStock(symbol: string): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/stocks/${symbol}`)
       .pipe(
         catchError(this.handleError)
       );

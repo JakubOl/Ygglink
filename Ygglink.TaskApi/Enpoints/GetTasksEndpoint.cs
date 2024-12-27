@@ -14,7 +14,6 @@ public class GetTasksEndpoint : IEndpoint
     {
         app.MapGet("task",
                 async ([FromQuery] string month,
-                ILogger<GetTasksEndpoint> logger,
                 TaskDbContext context,
                 ClaimsPrincipal user) =>
                 {

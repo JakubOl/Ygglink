@@ -12,7 +12,6 @@ public class DeleteTaskEnpoint : IEndpoint
     {
         app.MapDelete("task/{taskGuid}",
                 async (Guid taskGuid,
-                ILogger<GetTasksEndpoint> logger,
                 TaskDbContext context,
                 ClaimsPrincipal user) =>
                 {
