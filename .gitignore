@@ -492,3 +492,4 @@ baseline.json
 
 # Ignore cache created with the Angular CLI.
 .angular/
+/Ygglink.StockApi/appsettings.Development.json

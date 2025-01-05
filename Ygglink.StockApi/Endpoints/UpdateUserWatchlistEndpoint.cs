@@ -4,6 +4,7 @@ using Ygglink.ServiceDefaults.Models.Abstract;
 using Ygglink.StockApi.Infrastructure;
 using Ygglink.StockApi.Model;
 using Ygglink.ServiceDefaults.Extensions;
+using Ygglink.StockApi.Dtos;
 
 namespace Ygglink.StockApi.Endpoints;
 

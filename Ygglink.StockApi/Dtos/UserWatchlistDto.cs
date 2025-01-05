@@ -1,4 +1,4 @@
-﻿namespace Ygglink.StockApi.Model;
+﻿namespace Ygglink.StockApi.Dtos;
 
 public class UserWatchlistDto
 {

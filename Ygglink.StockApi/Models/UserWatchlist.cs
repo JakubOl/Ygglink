@@ -1,5 +1,6 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using Ygglink.StockApi.Dtos;
 
 namespace Ygglink.StockApi.Model;
 

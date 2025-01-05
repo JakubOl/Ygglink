@@ -1,15 +1,13 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
-import { Stock } from '../models/stock';
+import { UserWatchlist } from '../models/user-watchlist';
 
-export interface UserSubscription {
-  id?: string;
-  userId: string;
-  subscribedStocks: string[];
-}
+const httpOptions = {
+  headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+};
 
 @Injectable({
   providedIn: 'root'
@@ -19,22 +17,24 @@ export class StockService {
 
   constructor(private http: HttpClient) { }
 
-  getWatchlist(): Observable<UserSubscription[]> {
-    return this.http.get<UserSubscription[]>(`${this.apiUrl}/subscriptions`)
+  getWatchlist(): Observable<UserWatchlist[]> {
+    return this.http
+      .get<UserWatchlist[]>(`${this.apiUrl}/userwatchlist`, httpOptions)
       .pipe(
         catchError(this.handleError)
       );
   }
 
-  updateSubscription(userId: string, subscription: UserSubscription): Observable<void> {
-    return this.http.put<void>(`${this.apiUrl}/subscriptions/${userId}`, subscription)
+  updateWatchlist(userWatchlist: UserWatchlist): Observable<void> {
+    return this.http
+      .put<void>(`${this.apiUrl}/userwatchlist`, userWatchlist, httpOptions)
       .pipe(
         catchError(this.handleError)
       );
   }
 
-  getStocks(): Observable<Stock[]> {
-    return this.http.get<Stock[]>(`${this.apiUrl}/stocks`)
+  getStocks(stocks: string[]): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/stocks`, { ...httpOptions, params: { stocks }})
       .pipe(
         catchError(this.handleError)
       );

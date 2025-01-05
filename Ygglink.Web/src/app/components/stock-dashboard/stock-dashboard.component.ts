@@ -1,9 +1,10 @@
 import { Component, OnInit, HostListener, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { StockService, UserSubscription } from '../../services/stock.service';
+import { StockService } from '../../services/stock.service';
 import { Subscription, interval } from 'rxjs';
 import { StockData } from '../../models/stock-data';
-import { addDays } from 'date-fns';
+import { UserWatchlist } from '../../models/user-watchlist';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-stock-dashboard',
@@ -14,16 +15,17 @@ import { addDays } from 'date-fns';
 export class StockDashboardComponent implements OnInit, OnDestroy {
   stockForm: FormGroup;
   userId: string = 'user123';
-  userSubscription?: UserSubscription;
+  userWatchlist?: UserWatchlist;
   allStocks: { symbol: string, data: StockData[] }[] = [];
   displayedStocks: { symbol: string, data: StockData[] }[] = [];
   gridCols: number = 3;
   pageSize: number = 6;
+  
   currentPage: number = 0;
-  timerSubscription!: Subscription;
+  timerWatchlist!: Subscription;
   isLoading: boolean = false;
 
-  constructor(private fb: FormBuilder, private stockService: StockService) {
+  constructor(private fb: FormBuilder, private stockService: StockService, private snackBar: MatSnackBar) {
     this.stockForm = this.fb.group({
       symbol: ['', Validators.required]
     });
@@ -31,7 +33,7 @@ export class StockDashboardComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.adjustGridCols();
-    this.fetchUserSubscription();
+    this.fetchUserWatchlist();
     this.startAutoSlide();
   }
 
@@ -45,98 +47,103 @@ export class StockDashboardComponent implements OnInit, OnDestroy {
     this.updateDisplayedStocks();
   }
 
-  fetchUserSubscription(): void {
-    // this.isLoading = true;
-    this.userSubscription = {subscribedStocks: [ "A", "B", "C"], userId: "12"};
-    this.allStocks = [ { symbol: "A", data: this.generateDummyData() }, { symbol: "B", data: this.generateDummyData() }, { symbol: "C", data: this.generateDummyData() }];
-          
-    // this.stockService.getSubscriptionByUserId(this.userId).subscribe(
-    //   (subscription: UserSubscription) => {
-    //     this.userSubscription = subscription;
-    //     this.allStocks = subscription.subscribedStocks.map(symbol => ({
-    //       symbol,
-    //       data: this.generateDummyData()
-    //     }));
-    //     this.updateDisplayedStocks();
-    //     this.isLoading = false;
-    //   },
-    //   (error) => {
-    //     if (error.status === 404) {
-    //       this.createUserSubscription();
-    //     } else {
-    //       alert(`Error fetching subscription: ${error}`);
-    //       this.isLoading = false;
-    //     }
-    //   }
-    // );
+  fetchUserWatchlist(): void {
+    this.stockService
+      .getWatchlist()
+      .subscribe({
+        next: (userWatchlist: any) => 
+        {
+          this.fetchStockData(userWatchlist);
+          this.isLoading = false;
+        },
+        error: (error) => 
+        {
+          this.snackBar.open(`Error fetching Watchlist: ${error}`, 'Close', { duration: 3000 });
+          this.isLoading = false;
+        }
+      });
   }
 
-  createUserSubscription(): void {
-    const newSubscription: UserSubscription = {
-      userId: this.userId,
-      subscribedStocks: []
-    };
+  private fetchStockData(userWatchlist: any) {
+    this.stockService
+      .getStocks(userWatchlist.stocks)
+      .subscribe({
+        next: (data: any) => 
+        {
+          this.allStocks = data
+          this.isLoading = false;
+          this.updateDisplayedStocks();
+          this.resetTimer();
+        },
+        error: (error) => 
+        {
+          this.snackBar.open(`Error fetching Watchlist: ${error}`, 'Close', { duration: 3000 });
+          this.isLoading = false;
+        }
+      });
   }
 
   addStock(symbol: string): void {
     symbol = symbol.toUpperCase();
     if (this.allStocks.find(stock => stock.symbol === symbol)) {
-      alert(`${symbol} is already subscribed.`);
+      this.snackBar.open(`${symbol} is already subscribed.`, 'Close', { duration: 3000 });
       return;
     }
 
     this.isLoading = true;
-    const updatedStocks = [...(this.userSubscription?.subscribedStocks || []), symbol];
-    const updatedSubscription: UserSubscription = {
-      userId: this.userId,
-      subscribedStocks: updatedStocks
+    const updatedStocks = [...(this.userWatchlist?.stocks || []), symbol];
+    const updatedWatchlist: UserWatchlist = {
+      stocks: updatedStocks
     };
 
-    this.stockService.updateSubscription(this.userId, updatedSubscription).subscribe(
-      () => {
-        this.userSubscription!.subscribedStocks.push(symbol);
-        this.allStocks.push({ symbol, data: this.generateDummyData() });
-        this.updateDisplayedStocks();
-        this.isLoading = false;
-        this.resetTimer();
-      },
-      (error) => {
-        alert(`Error adding stock: ${error}`);
-        this.isLoading = false;
-      }
-    );
+    this.stockService
+      .updateWatchlist(updatedWatchlist)
+      .subscribe({
+        next: () => 
+        {
+          this.fetchStockData(updatedWatchlist);
+        },
+        error: (error) => 
+        {
+          this.snackBar.open(`Error adding stock to watchlist: ${error}`, 'Close', { duration: 3000 });
+          this.isLoading = false;
+        }
+      });
   }
 
   removeStock(symbol: string): void {
     this.isLoading = true;
-    const updatedStocks = this.userSubscription!.subscribedStocks.filter(s => s !== symbol);
-    const updatedSubscription: UserSubscription = {
-      userId: this.userId,
-      subscribedStocks: updatedStocks
-    };
+    const updatedStocks = this.userWatchlist!.stocks.filter(s => s !== symbol);
+    const updatedWatchlist: UserWatchlist = { stocks: updatedStocks };
 
-    this.stockService.updateSubscription(this.userId, updatedSubscription).subscribe(
-      () => {
-        this.userSubscription!.subscribedStocks = updatedStocks;
-        this.allStocks = this.allStocks.filter(stock => stock.symbol !== symbol);
-        this.updateDisplayedStocks();
-        this.isLoading = false;
-      },
-      (error) => {
-        alert(`Error removing stock: ${error}`);
-        this.isLoading = false;
-      }
-    );
+    this.stockService
+      .updateWatchlist(updatedWatchlist)
+      .subscribe({
+        next: () => 
+        {
+          this.userWatchlist!.stocks = updatedStocks;
+          this.allStocks = this.allStocks.filter(stock => stock.symbol !== symbol);
+          this.updateDisplayedStocks();
+          this.isLoading = false;
+        },
+        error: (error) => 
+        {
+          this.snackBar.open(`Error removing stock: ${error}`, 'Close', { duration: 3000 });
+          this.isLoading = false;
+        }
+      });
   }
 
   onSubmit(): void {
-    if (this.stockForm.valid) {
-      const symbol = this.stockForm.value.symbol.trim();
-      if (symbol) {
-        this.addStock(symbol);
-        this.stockForm.reset();
-      }
-    }
+    if (!this.stockForm.valid)
+      return;
+
+    const symbol = this.stockForm.value.symbol.trim();
+    if (!symbol)
+      return;
+
+    this.addStock(symbol);
+    this.stockForm.reset();
   }
 
   updateDisplayedStocks(): void {
@@ -165,51 +172,20 @@ export class StockDashboardComponent implements OnInit, OnDestroy {
   }
 
   startAutoSlide(): void {
-    this.timerSubscription = interval(60000).subscribe(() => {
+    this.timerWatchlist = interval(60000).subscribe(() => {
       this.nextPage();
     });
   }
 
   stopAutoSlide(): void {
-    if (this.timerSubscription) {
-      this.timerSubscription.unsubscribe();
+    if (this.timerWatchlist) {
+      this.timerWatchlist.unsubscribe();
     }
   }
 
   resetTimer(): void {
     this.stopAutoSlide();
     this.startAutoSlide();
-  }
-
-  generateDummyData(): StockData[] {
-    const data: StockData[] = [];
-    const startDate = new Date();
-    addDays(startDate, -30);
-
-    for (let i = 0; i < 30; i++) {
-      const date = new Date(startDate);
-      addDays(startDate, i);
-      const dateString = `${date.getMonth() + 1}/${date.getDate()}`;
-
-      const open = this.randomNumber(100, 500);
-      const close = open + this.randomNumber(-20, 20);
-      const low = Math.min(open, close) - this.randomNumber(0, 10);
-      const high = Math.max(open, close) + this.randomNumber(0, 10);
-
-      data.push({
-        date: dateString,
-        open: parseFloat(open.toFixed(2)),
-        close: parseFloat(close.toFixed(2)),
-        low: parseFloat(low.toFixed(2)),
-        high: parseFloat(high.toFixed(2))
-      });
-    }
-
-    return data;
-  }
-
-  randomNumber(min: number, max: number): number {
-    return Math.random() * (max - min) + min;
   }
 
   get totalPages(): number {

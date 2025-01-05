@@ -18,6 +18,8 @@ var sqlServer = builder
 
 var identityDb = sqlServer.AddDatabase("IdentityDatabase");
 var taskDb = sqlServer.AddDatabase("TaskDatabase");
+var workerDb = sqlServer.AddDatabase("WorkerDatabase");
+var stockDb = sqlServer.AddDatabase("StockDatabase");
 
 var identityApi = builder.AddProject<Projects.Ygglink_IdentityApi>("ygglink-identityapi")
     .WaitFor(identityDb)
@@ -39,8 +41,6 @@ builder.AddNpmApp("angular", "../Ygglink.Web")
     .WithHttpEndpoint(env: "PORT", port: 4200)
     .PublishAsDockerFile();
 
-var workerDb = sqlServer.AddDatabase("WorkerDatabase");
-
 builder.AddProject<Projects.Ygglink_Worker>("ygglink-worker")
     .WaitFor(workerDb)
     .WithReference(workerDb);
@@ -53,6 +53,8 @@ var mongodb = mongo.AddDatabase("mongodb");
 
 builder.AddProject<Projects.Ygglink_StockApi>("ygglink-stockapi")
     .WaitFor(mongodb)
-    .WithReference(mongodb);
+    .WithReference(mongodb)
+    .WaitFor(stockDb)
+    .WithReference(stockDb);
 
 builder.Build().Run();

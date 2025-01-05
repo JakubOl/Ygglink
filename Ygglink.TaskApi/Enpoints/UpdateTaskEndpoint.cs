@@ -35,6 +35,7 @@ public class UpdateTaskEndpoint : IEndpoint
                     task.Title = taskDto.Title;
                     task.StartDate = taskDto.StartDate;
                     task.EndDate = taskDto.EndDate;
+                    task.Priority = taskDto.Priority;
 
                     await context.SaveChangesAsync();
 
